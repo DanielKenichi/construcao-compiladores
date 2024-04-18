@@ -42,23 +42,31 @@ func t1algumalexerLexerInit() {
 	staticData.ModeNames = []string{
 		"DEFAULT_MODE",
 	}
+	staticData.LiteralNames = []string{
+		"", "", "", "'algoritmo'",
+	}
 	staticData.SymbolicNames = []string{
-		"", "COMENTARIO", "WS",
+		"", "COMENTARIO", "WS", "ALGORITMO",
 	}
 	staticData.RuleNames = []string{
-		"COMENTARIO", "WS",
+		"COMENTARIO", "WS", "ALGORITMO",
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
 	staticData.serializedATN = []int32{
-		4, 0, 2, 20, 6, -1, 2, 0, 7, 0, 2, 1, 7, 1, 1, 0, 1, 0, 5, 0, 8, 8, 0,
-		10, 0, 12, 0, 11, 9, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1,
-		1, 9, 0, 2, 1, 1, 3, 2, 1, 0, 2, 1, 0, 10, 10, 3, 0, 9, 10, 13, 13, 32,
-		32, 20, 0, 1, 1, 0, 0, 0, 0, 3, 1, 0, 0, 0, 1, 5, 1, 0, 0, 0, 3, 17, 1,
-		0, 0, 0, 5, 9, 5, 123, 0, 0, 6, 8, 8, 0, 0, 0, 7, 6, 1, 0, 0, 0, 8, 11,
-		1, 0, 0, 0, 9, 10, 1, 0, 0, 0, 9, 7, 1, 0, 0, 0, 10, 12, 1, 0, 0, 0, 11,
-		9, 1, 0, 0, 0, 12, 13, 5, 32, 0, 0, 13, 14, 5, 125, 0, 0, 14, 15, 1, 0,
-		0, 0, 15, 16, 6, 0, 0, 0, 16, 2, 1, 0, 0, 0, 17, 18, 7, 1, 0, 0, 18, 19,
-		6, 1, 1, 0, 19, 4, 1, 0, 0, 0, 2, 0, 9, 2, 1, 0, 0, 1, 1, 1,
+		4, 0, 3, 32, 6, -1, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 1, 0, 1, 0, 5,
+		0, 10, 8, 0, 10, 0, 12, 0, 13, 9, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1,
+		1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
+		1, 11, 0, 3, 1, 1, 3, 2, 5, 3, 1, 0, 2, 1, 0, 10, 10, 3, 0, 9, 10, 13,
+		13, 32, 32, 32, 0, 1, 1, 0, 0, 0, 0, 3, 1, 0, 0, 0, 0, 5, 1, 0, 0, 0, 1,
+		7, 1, 0, 0, 0, 3, 19, 1, 0, 0, 0, 5, 22, 1, 0, 0, 0, 7, 11, 5, 123, 0,
+		0, 8, 10, 8, 0, 0, 0, 9, 8, 1, 0, 0, 0, 10, 13, 1, 0, 0, 0, 11, 12, 1,
+		0, 0, 0, 11, 9, 1, 0, 0, 0, 12, 14, 1, 0, 0, 0, 13, 11, 1, 0, 0, 0, 14,
+		15, 5, 32, 0, 0, 15, 16, 5, 125, 0, 0, 16, 17, 1, 0, 0, 0, 17, 18, 6, 0,
+		0, 0, 18, 2, 1, 0, 0, 0, 19, 20, 7, 1, 0, 0, 20, 21, 6, 1, 1, 0, 21, 4,
+		1, 0, 0, 0, 22, 23, 5, 97, 0, 0, 23, 24, 5, 108, 0, 0, 24, 25, 5, 103,
+		0, 0, 25, 26, 5, 111, 0, 0, 26, 27, 5, 114, 0, 0, 27, 28, 5, 105, 0, 0,
+		28, 29, 5, 116, 0, 0, 29, 30, 5, 109, 0, 0, 30, 31, 5, 111, 0, 0, 31, 6,
+		1, 0, 0, 0, 2, 0, 11, 2, 1, 0, 0, 1, 1, 1,
 	}
 	deserializer := antlr.NewATNDeserializer(nil)
 	staticData.atn = deserializer.Deserialize(staticData.serializedATN)
@@ -101,6 +109,7 @@ func NewT1AlgumaLexer(input antlr.CharStream) *T1AlgumaLexer {
 const (
 	T1AlgumaLexerCOMENTARIO = 1
 	T1AlgumaLexerWS         = 2
+	T1AlgumaLexerALGORITMO  = 3
 )
 
 func (l *T1AlgumaLexer) Action(localctx antlr.RuleContext, ruleIndex, actionIndex int) {

@@ -1,19 +1,42 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/DanielKenichi/construcao-compiladores/T1/antlr4/br/ufscar/dc/compiladores/t1/lexico/parser"
+	"github.com/antlr4-go/antlr/v4"
 )
 
 func main() {
-	aa := parser.T1AlgumaLexer{}
 	inputFile := os.Args[1]
 	outputFile := os.Args[2]
 
-	fmt.Println(inputFile)
-	fmt.Println(outputFile)
-	fmt.Println(aa)
+	input, err := antlr.NewFileStream(inputFile)
+
+	if err != nil {
+		log.Fatalf("Error reading input file: %v", err)
+	}
+
+	output, err := os.OpenFile(outputFile, os.O_WRONLY|os.O_CREATE, 0644)
+
+	if err != nil {
+		log.Fatalf("Error opening output file: %v", err)
+	}
+
+	lexer := parser.NewT1AlgumaLexer(input)
+
+	for {
+		t := lexer.NextToken()
+
+		if t.GetTokenType() == antlr.TokenEOF {
+			break
+		}
+		_, err = output.WriteString("<'" + t.GetText() + "'," + lexer.LiteralNames[t.GetTokenType()] + ">\n")
+
+		if err != nil {
+			log.Fatalf("Failed writing to output file: %v", err)
+		}
+	}
 
 }
