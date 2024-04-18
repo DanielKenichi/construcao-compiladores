@@ -19,9 +19,9 @@ func WriteError(tokenName string, token antlr.Token) string {
 	case "ERRO":
 		return fmt.Sprintf("Linha %s: %s - simbolo nao identificado\n", strconv.Itoa(token.GetLine()), token.GetText())
 	case "ERRO_CADEIA_ABERTA":
-		return fmt.Sprintf("Linha %s: comentario nao fechado\n", strconv.Itoa(token.GetLine()))
-	case "ERRO_COMENTARIO_ABERTO":
 		return fmt.Sprintf("Linha %s: cadeia literal nao fechada\n", strconv.Itoa(token.GetLine()))
+	case "ERRO_COMENTARIO_ABERTO":
+		return fmt.Sprintf("Linha %s: comentario nao fechado\n", strconv.Itoa(token.GetLine()))
 	default:
 		return fmt.Sprintf("Linha %s: %s - erro nao identificado\n", strconv.Itoa(token.GetLine()), token.GetText())
 	}
