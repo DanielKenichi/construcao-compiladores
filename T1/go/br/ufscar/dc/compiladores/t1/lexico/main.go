@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/DanielKenichi/construcao-compiladores/T1/antlr4/br/ufscar/dc/compiladores/t1/lexico/parser"
+	"github.com/DanielKenichi/construcao-compiladores/T1/go/br/ufscar/dc/compiladores/t1/lexico/vocabulary"
 	"github.com/antlr4-go/antlr/v4"
 )
 
@@ -26,13 +27,15 @@ func main() {
 
 	lexer := parser.NewT1AlgumaLexer(input)
 
+	vocabulary := vocabulary.New(lexer.LiteralNames, lexer.SymbolicNames)
+
 	for {
 		t := lexer.NextToken()
 
 		if t.GetTokenType() == antlr.TokenEOF {
 			break
 		}
-		_, err = output.WriteString("<'" + t.GetText() + "'," + lexer.LiteralNames[t.GetTokenType()] + ">\n")
+		_, err = output.WriteString("<'" + t.GetText() + "'," + *vocabulary.GetDisplayName(t.GetTokenType()) + ">\n")
 
 		if err != nil {
 			log.Fatalf("Failed writing to output file: %v", err)
