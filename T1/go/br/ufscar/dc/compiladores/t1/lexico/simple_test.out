@@ -1,28 +1,32 @@
 <'algoritmo','algoritmo'>
 <'declare','declare'>
-<'nome',IDENT>
+<'quilometragem',IDENT>
+<',',','>
+<'abastecimento1',IDENT>
+<',',','>
+<'abastecimento2',IDENT>
 <':',':'>
-<'literal','literal'>
-<'declare','declare'>
-<'idade',IDENT>
-<':',':'>
-<'inteiro','inteiro'>
+<'real',IDENT>
 <'leia','leia'>
 <'(','('>
-<'nome',IDENT>
+<'quilometragem',IDENT>
 <')',')'>
 <'leia','leia'>
 <'(','('>
-<'idade',IDENT>
+<'abastecimento1',IDENT>
+<',',','>
+<'abastecimento2',IDENT>
 <')',')'>
 <'escreva','escreva'>
 <'(','('>
-<'nome',IDENT>
+<'quilometragem',IDENT>
+<'/','/'>
+<'(','('>
+<'abastecimento1',IDENT>
+<'+','+'>
+<'abastecimento2',IDENT>
+<')',')'>
 <',',','>
-<'" tem "',CADEIA>
-<',',','>
-<'idade',IDENT>
-<',',','>
-<'" anos."',CADEIA>
+<'" km/l"',CADEIA>
 <')',')'>
 <'fim_algoritmo','fim_algoritmo'>

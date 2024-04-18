@@ -2,6 +2,9 @@ package vocabulary
 
 import "strconv"
 
+/*Implementacao propria de um vocabulario em GO
+  baseado na implementacao existente em java*/
+
 type Vocabulary interface {
 	GetDisplayName(tokenType int) *string
 	GetSymbolicName(tokenType int) *string
