@@ -12,18 +12,15 @@ import (
 )
 
 func main() {
-	//Leitura dos argumentos
 	inputFile := os.Args[1]
 	outputFile := os.Args[2]
 
-	//Nova stream de input
 	input, err := antlr.NewFileStream(inputFile)
 
 	if err != nil {
 		log.Fatalf("Error reading input file: %v", err)
 	}
 
-	//Abertura do arquivo de output
 	output, err := os.OpenFile(outputFile, os.O_WRONLY|os.O_CREATE, 0644)
 
 	if err != nil {
@@ -36,20 +33,15 @@ func main() {
 	vocabulary := vocabulary.New(lexer.LiteralNames, lexer.SymbolicNames)
 
 	for {
-		//leitura do proximo token
 		t := lexer.NextToken()
 
-		//Para a leitura caso tenha chego no fim do arquivo
 		if t.GetTokenType() == antlr.TokenEOF {
 			break
 		}
 
-		//Recuperando no vocabulario o nome do token
 		tokenName := *vocabulary.GetDisplayName(t.GetTokenType())
 
-		//Verificando se o Token eh um erro lexico
 		if errortokens.IsTokenAError(tokenName) {
-			//escrevendo erro no arquivo de output e parando leitura
 			_, err = output.WriteString(errortokens.WriteError(tokenName, t))
 
 			if err != nil {
@@ -58,7 +50,6 @@ func main() {
 
 			break
 		} else {
-			//escrevendo token no arquivo de output
 			_, err = output.WriteString(fmt.Sprintf("<'%s',%s>\n", t.GetText(), tokenName))
 		}
 

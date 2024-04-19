@@ -11,4 +11,4 @@ TEMP_FOLDER="${PWD}/${FOLDER_NAME}"
 # Create the new directory
 mkdir "${TEMP_FOLDER}"
 
-java -jar $PWD/compiladores-corretor-automatico-1.0-SNAPSHOT-jar-with-dependencies.jar "${PWD}/t1-lexico" gcc $TEMP_FOLDER $PWD/casos-de-teste "790837" "800345" "t1"
+java -jar $PWD/compiladores-corretor-automatico-1.0-SNAPSHOT-jar-with-dependencies.jar "${PWD}/t1-lexico" gcc $TEMP_FOLDER $PWD/casos-de-teste "790837 800345" "t1"

@@ -2,7 +2,7 @@ lexer grammar T1AlgumaLexer;
 
 //Regra para ignorar comentario. Detecta uma cadeia iniciada por '{' e finalizada por '}', 
 //aceitando qualquer caractere entre '{' e '}' diferente de '\n' 
-COMENTARIO: '{' ~('\n')*? '}' {skip();};
+COMENTARIO: '{' ~('\n')*? '}' -> skip;
 
 //Palavras Chaves.
 ALGORITMO: 'algoritmo';
@@ -26,7 +26,7 @@ CASO: 'caso';
 SEJA: 'seja';
 FIM_CASO: 'fim_caso';
 PARA: 'para';
-FIM_PARA         : 'fim_para';
+FIM_PARA: 'fim_para';
 ATE: 'ate';
 FACA: 'faca';
 ENQUANTO: 'enquanto';
@@ -99,7 +99,7 @@ ERRO_COMENTARIO_ABERTO : '{' (~('\n'|'}'))*? '\n';
 ERRO_CADEIA_ABERTA : '"' ( ~('\n'|'"') )*? '\n';
 
 //Regra para pular whitespaces
-WS: ( ' ' | '\t' | '\r' | '\n' ) {skip();};
+WS: ( ' ' | '\t' | '\r' | '\n' ) -> skip;
 
 //Erro caso nenhuma regra identifique o simbolo.
 ERRO: .;

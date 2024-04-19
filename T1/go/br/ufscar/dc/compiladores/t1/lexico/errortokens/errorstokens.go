@@ -8,12 +8,10 @@ import (
 	"github.com/antlr4-go/antlr/v4"
 )
 
-// Verificando se o token eh um erro
 func IsTokenAError(tokenName string) bool {
 	return strings.Contains(tokenName, "ERRO")
 }
 
-// Escrita de mensagem de erro
 func WriteError(tokenName string, token antlr.Token) string {
 	switch tokenName {
 	case "ERRO":

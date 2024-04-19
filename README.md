@@ -3,7 +3,7 @@ Repositorio contendo os trabalhos realizados para a disciplina de construção d
 
 # Membros do grupo
 * Daniel Kenichi Tiago Tateishi - RA: 790837
-* Rodrigo Coffani - RA: 800345
+* Rodrigo Pavão Coffani Nunes - RA: 800345
 
 # Getting Started
 
