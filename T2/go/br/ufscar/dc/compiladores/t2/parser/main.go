@@ -65,7 +65,8 @@ func main() {
 				log.Fatalf("Failed writing to output file: %v", err)
 			}
 
-			break
+			output.WriteString("Fim da compilacao\n")
+			return
 		}
 
 		if err != nil {
