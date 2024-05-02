@@ -29,7 +29,7 @@ Para rodar o programa rode:
 
 Para rodar os testes, no diretorio do ```corretor``` execute:
 
->Note: No momento, para o T1 o script de teste espera que exista o binario do compilador com o nome t1-lexico dentro do diretorio do corretor
+>Note: No momento, para o T1 o script de teste espera que exista o binario do compilador com o nome do trabalho dentro do diretorio do corretor. Para o t1, deve ter um binário escrito t1, por exemplo
 
 ```bash
     ./run_tests.sh
