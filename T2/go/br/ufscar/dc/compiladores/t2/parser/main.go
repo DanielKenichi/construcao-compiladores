@@ -10,9 +10,23 @@ import (
 	"github.com/antlr4-go/antlr/v4"
 )
 
+//Descomente e arrume o path dessas variaveis para debug
+
+// var inputFile string = "/home/lucky/UFSCAR/Compiladores/construcao-compiladores/corretor/casos-de-teste/2.casos_teste_t2/entrada/1-algoritmo_2-2_apostila_LA_1_erro_linha_3_acusado_linha_10.txt"
+// var outputFile string = "./test.out"
+
+var inputFile string
+var outputFile string
+
 func main() {
-	inputFile := os.Args[1]
-	outputFile := os.Args[2]
+
+	if inputFile == "" {
+		inputFile = os.Args[1]
+	}
+
+	if outputFile == "" {
+		outputFile = os.Args[2]
+	}
 
 	input, err := antlr.NewFileStream(inputFile)
 
@@ -52,8 +66,6 @@ func main() {
 			}
 
 			break
-		} else {
-			// _, err = output.WriteString(fmt.Sprintf("<'%s',%s>\n", t.GetText(), tokenName))
 		}
 
 		if err != nil {
@@ -64,16 +76,17 @@ func main() {
 	// -----------------------------------
 	// ANALISE SINTÁTICA (T2)
 	// -----------------------------------
+	lexer.Reset()
 
 	tokens := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
 	parser := parser.NewT2AlgumaLexerParser(tokens)
 
 	// Adicionando nosso ErrorListener customizado
 	parser.RemoveErrorListeners()
-	mcel := NewCustomErrorListener(output)
-	parser.AddErrorListener(mcel)
+	customErrorListener := NewCustomErrorListener(output)
+	parser.AddErrorListener(customErrorListener)
 
 	parser.Programa()
 
-	output.WriteString("Fim da compilacao")
+	output.WriteString("Fim da compilacao\n")
 }

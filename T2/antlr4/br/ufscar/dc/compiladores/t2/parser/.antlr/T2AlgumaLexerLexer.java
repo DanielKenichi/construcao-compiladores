@@ -1,4 +1,4 @@
-// Generated from /home/rodrigo/UFSCAR/Compiladores/construcao-compiladores/T2/antlr4/br/ufscar/dc/compiladores/t2/lexico/T2AlgumaLexer.g4 by ANTLR 4.13.1
+// Generated from /home/lucky/UFSCAR/Compiladores/construcao-compiladores/T2/antlr4/br/ufscar/dc/compiladores/t2/parser/T2AlgumaLexer.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

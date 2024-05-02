@@ -119,7 +119,7 @@ programa
 
 // Declarações de variáveis e funções
 declaracoes
-  : (declaracoes_variaveis | declaracoes_funcoes)
+  : (declaracoes_variaveis | declaracoes_funcoes)*
   ;
 
 // Seção das variaveis

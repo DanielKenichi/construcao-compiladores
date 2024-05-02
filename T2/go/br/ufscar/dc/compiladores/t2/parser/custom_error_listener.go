@@ -9,7 +9,7 @@ import (
 
 type customErrorListener struct {
 	output     *os.File
-	syntar_err bool
+	syntax_err bool
 }
 
 func NewCustomErrorListener(output *os.File) *customErrorListener {
@@ -32,7 +32,7 @@ func (l *customErrorListener) ReportContextSensitivity(recognizer antlr.Parser, 
 
 func (l *customErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, charPositionInLine int, msg string, e antlr.RecognitionException) {
 	// Reportar apenas o primeiro erro, ignorar os outros
-	if !l.syntar_err {
+	if !l.syntax_err {
 		t := offendingSymbol.(antlr.Token)
 
 		// Modificação da string "EOF" para conformidade com os casos de testes
@@ -43,6 +43,6 @@ func (l *customErrorListener) SyntaxError(recognizer antlr.Recognizer, offending
 
 		// Impressão do erro
 		l.output.WriteString("Linha " + strconv.Itoa(line) + ": erro sintatico proximo a " + tokenText + "\n")
-		l.syntar_err = true
+		l.syntax_err = true
 	}
 }
