@@ -30,7 +30,7 @@ Para validação, no diretrio do ```corretor``` execute:
 
 *T1
 
-```go build -o t1 ../T1/go/br/ufscar/dc/compiladores/t2/lexico/*.go```
+```go build -o t1 ../T1/go/br/ufscar/dc/compiladores/t1/lexico/*.go```
 
 *T2
 
