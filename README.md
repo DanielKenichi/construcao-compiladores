@@ -42,3 +42,13 @@ e depois rode o script
 ```bash
     ./run_tests.sh <tn> (substitua "n" pelo trabalho a ser corrigido) 
 ```
+
+Para gerar o código do ANTLR, execute, a partir do diretório onde se encontra o arquivo .g4 (dentro da pasta antlr):
+
+*T1
+
+```antlr4 -Dlanguage=Go -o parser T1AlgumaLexer.g4```
+
+*T2
+
+```antlr4 -Dlanguage=Go -o parser T2AlgumaLexer.g4```
