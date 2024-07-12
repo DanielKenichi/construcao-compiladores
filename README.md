@@ -36,6 +36,8 @@ Para validação, no diretrio do ```corretor``` execute:
 
 ```go build -o t2 ../T2/go/br/ufscar/dc/compiladores/t2/parser/*.go```
 
+*T3
+
 
 e depois rode o script
 
@@ -52,3 +54,7 @@ Para gerar o código do ANTLR, execute, a partir do diretório onde se encontra 
 *T2
 
 ```antlr4 -Dlanguage=Go -o parser T2AlgumaLexer.g4```
+
+*T3
+
+```antlr4 -Dlanguage=Go -visitor -o Alguma T3Alguma.g4```
