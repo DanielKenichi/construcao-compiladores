@@ -246,7 +246,7 @@ cmdEscreva
     : ESCREVA ABREPAR expressao (VIRGULA expressao)* FECHAPAR
     ;
 cmdSe
-    : SE expressao ENTAO cmd* (SENAO cmd*)? FIM_SE
+    : SE expressao ENTAO seCmds+=cmd* (SENAO senaoCmds+=cmd*)? FIM_SE
     ;
 cmdCaso
     : CASO exp_aritmetica SEJA selecao (SENAO cmd*)?  FIM_CASO

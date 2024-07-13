@@ -1951,19 +1951,22 @@ public class T3AlgumaParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CmdSeContext extends ParserRuleContext {
+		public CmdContext cmd;
+		public List<CmdContext> seCmds = new ArrayList<CmdContext>();
+		public List<CmdContext> senaoCmds = new ArrayList<CmdContext>();
 		public TerminalNode SE() { return getToken(T3AlgumaParser.SE, 0); }
 		public ExpressaoContext expressao() {
 			return getRuleContext(ExpressaoContext.class,0);
 		}
 		public TerminalNode ENTAO() { return getToken(T3AlgumaParser.ENTAO, 0); }
 		public TerminalNode FIM_SE() { return getToken(T3AlgumaParser.FIM_SE, 0); }
+		public TerminalNode SENAO() { return getToken(T3AlgumaParser.SENAO, 0); }
 		public List<CmdContext> cmd() {
 			return getRuleContexts(CmdContext.class);
 		}
 		public CmdContext cmd(int i) {
 			return getRuleContext(CmdContext.class,i);
 		}
-		public TerminalNode SENAO() { return getToken(T3AlgumaParser.SENAO, 0); }
 		public CmdSeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1990,7 +1993,8 @@ public class T3AlgumaParser extends Parser {
 				{
 				{
 				setState(368);
-				cmd();
+				((CmdSeContext)_localctx).cmd = cmd();
+				((CmdSeContext)_localctx).seCmds.add(((CmdSeContext)_localctx).cmd);
 				}
 				}
 				setState(373);
@@ -2011,7 +2015,8 @@ public class T3AlgumaParser extends Parser {
 					{
 					{
 					setState(375);
-					cmd();
+					((CmdSeContext)_localctx).cmd = cmd();
+					((CmdSeContext)_localctx).senaoCmds.add(((CmdSeContext)_localctx).cmd);
 					}
 					}
 					setState(380);

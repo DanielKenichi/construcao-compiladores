@@ -2,7 +2,6 @@ package visitor
 
 import (
 	"fmt"
-	"log"
 
 	parser "github.com/DanielKenichi/construcao-compiladores/T3/antlr4/br/ufscar/dc/compiladores/t3/parser/Alguma"
 	"github.com/DanielKenichi/construcao-compiladores/T3/go/br/ufscar/dc/compiladores/t3/symboltable"
@@ -71,6 +70,8 @@ func (v *AlgumaVisitor) AddIdentifierToSymbolTable(identifier antlr.TerminalNode
 		result = append(result,
 			semanticError(identifier.GetSymbol(), fmt.Sprintf("identificador %v ja declarado anteriormente", identifier.GetText())),
 		)
+
+		return result
 	}
 
 	v.Scopes.CurrentScope().AddSymbol(identifier.GetText(), varType)
@@ -129,53 +130,91 @@ func (v *AlgumaVisitor) VerifyVarAttribution(atribuicao parser.ICmdAtribuicaoCon
 func (v *AlgumaVisitor) VerifyExpression(expression parser.IExpressaoContext) (symboltable.Type, []string) {
 	var expType symboltable.Type
 	result := make([]string, 0)
+	aux := 0
+
 	for _, termoLogico := range expression.AllTermo_logico() {
-		for _, fatorLogico := range termoLogico.AllFator_logico() {
-			expType, result = v.VerifyParcelaLogica(fatorLogico.Parcela_logica())
 
-			if expType == symboltable.INVALIDO {
-				log.Printf("invalid parcel: %v", result)
+		currentType, termoLogicoResult := v.VerifyTermoLogico(termoLogico)
 
-				return symboltable.INVALIDO, result
-			}
+		result = append(result, termoLogicoResult...)
+
+		if aux != 0 && !IsTypesCompatible(currentType, expType) {
+			return symboltable.INVALIDO, result
 		}
+
+		expType = currentType
+		aux++
+	}
+
+	if len(expression.AllOp_logico_1()) > 0 {
+		expType = symboltable.LOGICO
 	}
 
 	return expType, result
 }
 
-func (v *AlgumaVisitor) VerifyParcelaLogica(parcelaLogica parser.IParcela_logicaContext) (symboltable.Type, []string) {
+func (v *AlgumaVisitor) VerifyTermoLogico(termoLogico parser.ITermo_logicoContext) (symboltable.Type, []string) {
 
+	var lastType symboltable.Type
 	result := make([]string, 0)
-	var parcelaType symboltable.Type
+	aux := 0
+
+	for _, fatorLogico := range termoLogico.AllFator_logico() {
+		currentType, parcelaLogicaResult := v.VerifyParcelaLogica(fatorLogico.Parcela_logica())
+
+		result = append(result, parcelaLogicaResult...)
+
+		if aux != 0 && !IsTypesCompatible(currentType, lastType) {
+			return symboltable.INVALIDO, result
+		}
+
+		lastType = currentType
+		aux++
+	}
+
+	if len(termoLogico.AllOp_logico_2()) > 0 {
+		lastType = symboltable.LOGICO
+	}
+
+	return lastType, result
+}
+
+func (v *AlgumaVisitor) VerifyParcelaLogica(parcelaLogica parser.IParcela_logicaContext) (symboltable.Type, []string) {
+	result := make([]string, 0)
+	var parcelaType symboltable.Type = symboltable.INVALIDO
 
 	if parcelaLogica.VERDADEIRO() != nil || parcelaLogica.FALSO() != nil {
 		return symboltable.LOGICO, result
 	}
 
+	aux := 0
+
 	for _, expArit := range parcelaLogica.Exp_relacional().AllExp_aritmetica() {
+
 		currentType, expAritResult := v.VerifyExpressaoAritmetica(expArit)
 
 		result = append(result, expAritResult...)
 
-		if currentType == symboltable.INVALIDO {
-			log.Printf("invalid exparit: %v", result)
-
+		if aux != 0 && !IsTypesCompatible(parcelaType, currentType) {
 			return symboltable.INVALIDO, result
 		}
 
 		parcelaType = currentType
+		aux++
+	}
+
+	if parcelaLogica.Exp_relacional().Op_relacional() != nil {
+		parcelaType = symboltable.LOGICO
 	}
 
 	return parcelaType, result
 }
 
 func (v *AlgumaVisitor) VerifyExpressaoAritmetica(expAritmetica parser.IExp_aritmeticaContext) (symboltable.Type, []string) {
-
 	result := make([]string, 0)
-
 	var lastType symboltable.Type = symboltable.INVALIDO
 	aux := 0
+
 	for _, termo := range expAritmetica.AllTermo() {
 
 		currentType, termoResult := v.VerifyTermo(termo)
@@ -183,7 +222,6 @@ func (v *AlgumaVisitor) VerifyExpressaoAritmetica(expAritmetica parser.IExp_arit
 		result = append(result, termoResult...)
 
 		if aux != 0 && !IsTypesCompatible(currentType, lastType) {
-			log.Printf("invalid termo: %v", result)
 			return symboltable.INVALIDO, result
 		}
 
@@ -196,7 +234,6 @@ func (v *AlgumaVisitor) VerifyExpressaoAritmetica(expAritmetica parser.IExp_arit
 }
 
 func (v *AlgumaVisitor) VerifyTermo(termo parser.ITermoContext) (symboltable.Type, []string) {
-
 	result := make([]string, 0)
 	var lastType symboltable.Type = symboltable.INVALIDO
 	aux := 0
@@ -207,8 +244,6 @@ func (v *AlgumaVisitor) VerifyTermo(termo parser.ITermoContext) (symboltable.Typ
 		result = append(result, fatorResult...)
 
 		if aux != 0 && !IsTypesCompatible(currentType, lastType) {
-			log.Printf("invalid fator: %v", result)
-
 			return symboltable.INVALIDO, result
 		}
 
@@ -245,13 +280,11 @@ func (v *AlgumaVisitor) VerifyFator(fator parser.IFatorContext) (symboltable.Typ
 }
 
 func (v *AlgumaVisitor) VerifyParcela(parcela parser.IParcelaContext) (symboltable.Type, []string) {
-
 	result := make([]string, 0)
 
 	if parcela.Parcela_unario() != nil {
 
 		if parcela.Parcela_unario().Identificador() != nil {
-			log.Print("Verify parcela ident")
 
 			identifier := parcela.Parcela_unario().Identificador().IDENT(0)
 
@@ -260,8 +293,6 @@ func (v *AlgumaVisitor) VerifyParcela(parcela parser.IParcelaContext) (symboltab
 				result = append(result,
 					semanticError(identifier.GetSymbol(), fmt.Sprintf("identificador %v nao declarado", identifier.GetText())),
 				)
-
-				log.Printf("invalid ident %v %v", identifier.GetText(), result)
 
 				return symboltable.INVALIDO, result
 			}
@@ -278,7 +309,13 @@ func (v *AlgumaVisitor) VerifyParcela(parcela parser.IParcelaContext) (symboltab
 	}
 
 	if parcela.Parcela_nao_unario() != nil {
-		return symboltable.PONTEIRO, result
+		if parcela.Parcela_nao_unario().ENDERECO() != nil {
+			return symboltable.PONTEIRO, result
+		}
+
+		if parcela.Parcela_nao_unario().CADEIA() != nil {
+			return symboltable.LITERAL, result
+		}
 	}
 
 	return symboltable.INVALIDO, result

@@ -2,7 +2,6 @@ package visitor
 
 import (
 	"fmt"
-	"log"
 
 	parser "github.com/DanielKenichi/construcao-compiladores/T3/antlr4/br/ufscar/dc/compiladores/t3/parser/Alguma"
 	"github.com/DanielKenichi/construcao-compiladores/T3/go/br/ufscar/dc/compiladores/t3/scope"
@@ -59,7 +58,6 @@ func (v *AlgumaVisitor) VisitDeclaracoes(ctx parser.IDeclaracoesContext) []strin
 
 func (v *AlgumaVisitor) VisitCorpo(ctx parser.ICorpoContext) []string {
 	v.Scopes.NewScope()
-	log.Print("Entrei no corpo")
 	corpoResult := make([]string, 0)
 
 	result := v.VisitDeclaracoes_variaveis(ctx.AllDeclaracoes_variaveis())
@@ -148,8 +146,6 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 func (v *AlgumaVisitor) VisitCmdLeia(ctx parser.ICmdLeiaContext) []string {
 	cmdLeiaResult := make([]string, 0)
 
-	log.Print("Visit Leia")
-
 	for _, ident := range ctx.AllIdentificador() {
 		argToRead := ident.IDENT(0)
 
@@ -167,14 +163,10 @@ func (v *AlgumaVisitor) VisitCmdLeia(ctx parser.ICmdLeiaContext) []string {
 func (v *AlgumaVisitor) VisitCmdEscreva(ctx parser.ICmdEscrevaContext) []string {
 	cmdEscrevaResult := make([]string, 0)
 
-	log.Print("Visit Escreva")
-	for _, exp := range ctx.AllExpressao() {
+	for _, expressao := range ctx.AllExpressao() {
+		expressaoResult := v.VisitExpressao(expressao)
 
-		log.Print("VerifyingEscreva exp")
-
-		_, result := v.VerifyExpression(exp)
-
-		cmdEscrevaResult = append(cmdEscrevaResult, result...)
+		cmdEscrevaResult = append(cmdEscrevaResult, expressaoResult...)
 	}
 
 	return cmdEscrevaResult
@@ -187,12 +179,12 @@ func (v *AlgumaVisitor) VisitCmdSe(ctx parser.ICmdSeContext) []string {
 
 	cmdSeResult = append(cmdSeResult, result...)
 
-	result = v.VisitCmd(ctx.AllCmd())
+	result = v.VisitCmd(ctx.GetSeCmds())
 
 	cmdSeResult = append(cmdSeResult, result...)
 
 	if ctx.SENAO() != nil {
-		result = v.VisitCmd(ctx.AllCmd())
+		result = v.VisitCmd(ctx.GetSenaoCmds())
 
 		cmdSeResult = append(cmdSeResult, result...)
 	}
@@ -314,8 +306,6 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 
 	for _, ctx := range ctxs {
 		if ctx.DECLARE() != nil {
-			log.Printf("declare")
-
 			result := v.VisitVariavel(ctx.Variavel())
 
 			variaveisResult = append(variaveisResult, result...)
@@ -355,7 +345,6 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 			continue
 		}
 	}
-	log.Printf("saindo da decla de vars com scopo %v", v.Scopes.CurrentScope())
 
 	return variaveisResult
 }
@@ -371,8 +360,6 @@ func (v *AlgumaVisitor) VisitVariavel(ctx parser.IVariavelContext) []string {
 
 	result := v.VisitIdentificador(ctx.Identificador(0))
 
-	log.Printf("ident with name %v", ctx.Identificador(0).GetText())
-
 	variavelResult = append(variavelResult, result...)
 
 	aux := 0
@@ -380,8 +367,6 @@ func (v *AlgumaVisitor) VisitVariavel(ctx parser.IVariavelContext) []string {
 		aux++
 
 		result = v.VisitIdentificador(ctx.Identificador(aux))
-
-		log.Printf("ident with name %v", ctx.Identificador(aux).GetText())
 
 		variavelResult = append(variavelResult, result...)
 	}
@@ -395,6 +380,10 @@ func (v *AlgumaVisitor) VisitVariavel(ctx parser.IVariavelContext) []string {
 
 func (v *AlgumaVisitor) VisitExpressao(ctx parser.IExpressaoContext) []string {
 	expressaoResult := make([]string, 0)
+
+	_, result := v.VerifyExpression(ctx)
+
+	expressaoResult = append(expressaoResult, result...)
 
 	return expressaoResult
 }
@@ -434,8 +423,6 @@ func (v *AlgumaVisitor) VisitIdentificador(ctx parser.IIdentificadorContext) []s
 func (v *AlgumaVisitor) VisitTipo(ctx parser.ITipoContext) []string {
 	tipoResult := make([]string, 0)
 
-	log.Print("Visit Tipo")
-
 	if ctx.Registro() != nil {
 		result := v.VisitRegistro(ctx.Registro())
 
@@ -455,8 +442,6 @@ func (v *AlgumaVisitor) VisitTipo_variavel(ctx parser.ITipo_variavelContext) []s
 	tipoVariavelResult := make([]string, 0)
 
 	ident := ctx.IDENT()
-
-	log.Printf("Visit Tipo variavel")
 
 	if ident != nil {
 		if !v.Scopes.CurrentScope().Exists(ident.GetText()) {
