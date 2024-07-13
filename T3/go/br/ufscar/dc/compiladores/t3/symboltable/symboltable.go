@@ -1,7 +1,5 @@
 package symboltable
 
-import "errors"
-
 type Type int32
 
 const (
@@ -36,13 +34,6 @@ func (s *SymbolTable) Exists(name string) bool {
 	return ok
 }
 
-func (s *SymbolTable) GetType(name string) (Type, error) {
-
-	exists := s.Exists(name)
-
-	if !exists {
-		return INVALIDO, errors.New("symbol not declared")
-	}
-
-	return s.Table[name], nil
+func (s *SymbolTable) GetType(name string) Type {
+	return s.Table[name]
 }

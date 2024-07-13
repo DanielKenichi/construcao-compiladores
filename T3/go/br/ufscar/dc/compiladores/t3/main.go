@@ -94,7 +94,7 @@ func main() {
 	// ANALISE SEMÂNTICA (T3)
 	// -----------------------------------
 
-	algumaVisitor := visitor.AlgumaVisitor{}
+	algumaVisitor := visitor.New()
 
 	semanticErrors := algumaVisitor.VisitPrograma(tree)
 

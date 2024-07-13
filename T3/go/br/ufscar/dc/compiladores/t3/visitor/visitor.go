@@ -2,6 +2,7 @@ package visitor
 
 import (
 	"fmt"
+	"log"
 
 	parser "github.com/DanielKenichi/construcao-compiladores/T3/antlr4/br/ufscar/dc/compiladores/t3/parser/Alguma"
 	"github.com/DanielKenichi/construcao-compiladores/T3/go/br/ufscar/dc/compiladores/t3/scope"
@@ -21,7 +22,7 @@ func New() *AlgumaVisitor {
 }
 
 func semanticError(token antlr.Token, message string) string {
-	return fmt.Sprintf("Linha %v: %s", token.GetLine(), message)
+	return fmt.Sprintf("Linha %v: %s\n", token.GetLine(), message)
 }
 
 func (v *AlgumaVisitor) VisitPrograma(ctx parser.IProgramaContext) []string {
@@ -57,6 +58,8 @@ func (v *AlgumaVisitor) VisitDeclaracoes(ctx parser.IDeclaracoesContext) []strin
 }
 
 func (v *AlgumaVisitor) VisitCorpo(ctx parser.ICorpoContext) []string {
+	v.Scopes.NewScope()
+	log.Print("Entrei no corpo")
 	corpoResult := make([]string, 0)
 
 	result := v.VisitDeclaracoes_variaveis(ctx.AllDeclaracoes_variaveis())
@@ -76,11 +79,18 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 	for _, ctx := range ctxs {
 
 		if ctx.CmdLeia() != nil {
-			return cmdResult
+			result := v.VisitCmdLeia(ctx.CmdLeia())
+
+			cmdResult = append(cmdResult, result...)
+			continue
 		}
 
 		if ctx.CmdEscreva() != nil {
-			return cmdResult
+			result := v.VisitCmdEscreva(ctx.CmdEscreva())
+
+			cmdResult = append(cmdResult, result...)
+
+			continue
 		}
 
 		if ctx.CmdSe() != nil {
@@ -88,7 +98,7 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 
 			cmdResult = append(cmdResult, result...)
 
-			return cmdResult
+			continue
 		}
 
 		if ctx.CmdCaso() != nil {
@@ -96,7 +106,7 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 
 			cmdResult = append(cmdResult, result...)
 
-			return cmdResult
+			continue
 		}
 
 		if ctx.CmdPara() != nil {
@@ -104,15 +114,70 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 
 			cmdResult = append(cmdResult, result...)
 
-			return cmdResult
+			continue
 		}
 
 		if ctx.CmdEnquanto() != nil {
+			result := v.VisitCmdEnquanto(ctx.CmdEnquanto())
 
+			cmdResult = append(cmdResult, result...)
+
+			continue
+		}
+
+		if ctx.CmdFaca() != nil {
+			result := v.VisitCmdFaca(ctx.CmdFaca())
+
+			cmdResult = append(cmdResult, result...)
+
+			continue
+		}
+
+		if ctx.CmdAtribuicao() != nil {
+			result := v.VisitCmdAtribuicao(ctx.CmdAtribuicao())
+
+			cmdResult = append(cmdResult, result...)
+
+			continue
 		}
 	}
 
 	return cmdResult
+}
+
+func (v *AlgumaVisitor) VisitCmdLeia(ctx parser.ICmdLeiaContext) []string {
+	cmdLeiaResult := make([]string, 0)
+
+	log.Print("Visit Leia")
+
+	for _, ident := range ctx.AllIdentificador() {
+		argToRead := ident.IDENT(0)
+
+		if !v.Scopes.CurrentScope().Exists(argToRead.GetText()) {
+			cmdLeiaResult = append(cmdLeiaResult,
+				semanticError(argToRead.GetSymbol(), fmt.Sprintf("identificador %v nao declarado", argToRead.GetText())),
+			)
+		}
+
+	}
+
+	return cmdLeiaResult
+}
+
+func (v *AlgumaVisitor) VisitCmdEscreva(ctx parser.ICmdEscrevaContext) []string {
+	cmdEscrevaResult := make([]string, 0)
+
+	log.Print("Visit Escreva")
+	for _, exp := range ctx.AllExpressao() {
+
+		log.Print("VerifyingEscreva exp")
+
+		_, result := v.VerifyExpression(exp)
+
+		cmdEscrevaResult = append(cmdEscrevaResult, result...)
+	}
+
+	return cmdEscrevaResult
 }
 
 func (v *AlgumaVisitor) VisitCmdSe(ctx parser.ICmdSeContext) []string {
@@ -167,6 +232,52 @@ func (v *AlgumaVisitor) VisitCmdPara(ctx parser.ICmdParaContext) []string {
 	return cmdParaResult
 }
 
+func (v *AlgumaVisitor) VisitCmdEnquanto(ctx parser.ICmdEnquantoContext) []string {
+	cmdEnquantoResult := make([]string, 0)
+
+	result := v.VisitExpressao(ctx.Expressao())
+
+	cmdEnquantoResult = append(cmdEnquantoResult, result...)
+
+	result = v.VisitCmd(ctx.AllCmd())
+
+	cmdEnquantoResult = append(cmdEnquantoResult, result...)
+
+	return cmdEnquantoResult
+}
+
+func (v *AlgumaVisitor) VisitCmdFaca(ctx parser.ICmdFacaContext) []string {
+	cmdFacaResult := make([]string, 0)
+
+	result := v.VisitCmd(ctx.AllCmd())
+
+	cmdFacaResult = append(cmdFacaResult, result...)
+
+	result = v.VisitExpressao(ctx.Expressao())
+
+	cmdFacaResult = append(cmdFacaResult, result...)
+
+	return cmdFacaResult
+}
+
+func (v *AlgumaVisitor) VisitCmdAtribuicao(ctx parser.ICmdAtribuicaoContext) []string {
+	cmdAtibuicaoResult := make([]string, 0)
+
+	result := v.VisitIdentificador(ctx.Identificador())
+
+	cmdAtibuicaoResult = append(cmdAtibuicaoResult, result...)
+
+	result = v.VisitExpressao(ctx.Expressao())
+
+	cmdAtibuicaoResult = append(cmdAtibuicaoResult, result...)
+
+	result = v.VerifyVarAttribution(ctx)
+
+	cmdAtibuicaoResult = append(cmdAtibuicaoResult, result...)
+
+	return cmdAtibuicaoResult
+}
+
 func (v *AlgumaVisitor) VisitSelecao(ctx parser.ISelecaoContext) []string {
 	selecaoResult := make([]string, 0)
 
@@ -202,8 +313,9 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 	variaveisResult := make([]string, 0)
 
 	for _, ctx := range ctxs {
-
 		if ctx.DECLARE() != nil {
+			log.Printf("declare")
+
 			result := v.VisitVariavel(ctx.Variavel())
 
 			variaveisResult = append(variaveisResult, result...)
@@ -211,7 +323,7 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 			result = v.AddVarToSymbolTable(ctx.Variavel())
 
 			variaveisResult = append(variaveisResult, result...)
-			break
+			continue
 		}
 
 		if ctx.CONSTANTE() != nil {
@@ -227,7 +339,7 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 			result = v.AddConstToSymbolTable(ctx.IDENT(), ctx.Tipo_basico())
 
 			variaveisResult = append(variaveisResult, result...)
-			break
+			continue
 		}
 
 		if ctx.TIPO() != nil {
@@ -240,9 +352,10 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 
 			variaveisResult = append(variaveisResult, result...)
 
-			break
+			continue
 		}
 	}
+	log.Printf("saindo da decla de vars com scopo %v", v.Scopes.CurrentScope())
 
 	return variaveisResult
 }
@@ -253,16 +366,12 @@ func (v *AlgumaVisitor) VisitDeclaracoes_funcoes(ctx []parser.IDeclaracoes_funco
 	return funcoesResult
 }
 
-/*
-A partir desse no nessa branch da arvore nao seria necessario para os casos de testes do T3 aprofundar mais
-daria apenas para retornar um slice de string vazio
-mas fica a implementação apenas para exemplo caso seja necessario futuramente
-*/
-
 func (v *AlgumaVisitor) VisitVariavel(ctx parser.IVariavelContext) []string {
 	variavelResult := make([]string, 0)
 
 	result := v.VisitIdentificador(ctx.Identificador(0))
+
+	log.Printf("ident with name %v", ctx.Identificador(0).GetText())
 
 	variavelResult = append(variavelResult, result...)
 
@@ -271,6 +380,8 @@ func (v *AlgumaVisitor) VisitVariavel(ctx parser.IVariavelContext) []string {
 		aux++
 
 		result = v.VisitIdentificador(ctx.Identificador(aux))
+
+		log.Printf("ident with name %v", ctx.Identificador(aux).GetText())
 
 		variavelResult = append(variavelResult, result...)
 	}
@@ -323,7 +434,39 @@ func (v *AlgumaVisitor) VisitIdentificador(ctx parser.IIdentificadorContext) []s
 func (v *AlgumaVisitor) VisitTipo(ctx parser.ITipoContext) []string {
 	tipoResult := make([]string, 0)
 
+	log.Print("Visit Tipo")
+
+	if ctx.Registro() != nil {
+		result := v.VisitRegistro(ctx.Registro())
+
+		tipoResult = append(tipoResult, result...)
+	}
+
+	if ctx.Tipo_variavel() != nil {
+		result := v.VisitTipo_variavel(ctx.Tipo_variavel())
+
+		tipoResult = append(tipoResult, result...)
+	}
+
 	return tipoResult
+}
+
+func (v *AlgumaVisitor) VisitTipo_variavel(ctx parser.ITipo_variavelContext) []string {
+	tipoVariavelResult := make([]string, 0)
+
+	ident := ctx.IDENT()
+
+	log.Printf("Visit Tipo variavel")
+
+	if ident != nil {
+		if !v.Scopes.CurrentScope().Exists(ident.GetText()) {
+			tipoVariavelResult = append(tipoVariavelResult,
+				semanticError(ident.GetSymbol(), fmt.Sprintf("tipo %v nao declarado", ident.GetText())),
+			)
+		}
+	}
+
+	return tipoVariavelResult
 }
 
 func (v *AlgumaVisitor) VisitExp_aritmetica(ctx parser.IExp_aritmeticaContext) []string {

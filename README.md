@@ -38,6 +38,8 @@ Para validação, no diretrio do ```corretor``` execute:
 
 *T3
 
+```go build -o t3 ../T3/go/br/ufscar/dc/compiladores/t3/*.go```
+
 
 e depois rode o script
 

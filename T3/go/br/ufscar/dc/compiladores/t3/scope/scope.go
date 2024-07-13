@@ -1,6 +1,8 @@
 package scope
 
-import "github.com/DanielKenichi/construcao-compiladores/T3/go/br/ufscar/dc/compiladores/t3/symboltable"
+import (
+	"github.com/DanielKenichi/construcao-compiladores/T3/go/br/ufscar/dc/compiladores/t3/symboltable"
+)
 
 type Scope struct {
 	Stack []*symboltable.SymbolTable
