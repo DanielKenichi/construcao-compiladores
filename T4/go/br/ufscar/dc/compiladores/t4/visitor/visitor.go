@@ -5,7 +5,6 @@ import (
 
 	parser "github.com/DanielKenichi/construcao-compiladores/T4/antlr4/br/ufscar/dc/compiladores/t4/parser/Alguma"
 	"github.com/DanielKenichi/construcao-compiladores/T4/go/br/ufscar/dc/compiladores/t4/scope"
-	"github.com/DanielKenichi/construcao-compiladores/T4/go/br/ufscar/dc/compiladores/t4/symboltable"
 	"github.com/antlr4-go/antlr/v4"
 )
 
@@ -343,7 +342,7 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 
 			variaveisResult = append(variaveisResult, result...)
 
-			result = v.AddIdentifierToSymbolTable(ctx.IDENT(), symboltable.REGISTRO)
+			result = v.AddRegToSymbolTable(ctx.IDENT())
 
 			variaveisResult = append(variaveisResult, result...)
 
@@ -354,8 +353,12 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 	return variaveisResult
 }
 
-func (v *AlgumaVisitor) VisitDeclaracoes_funcoes(ctx []parser.IDeclaracoes_funcoesContext) []string {
+func (v *AlgumaVisitor) VisitDeclaracoes_funcoes(ctxs []parser.IDeclaracoes_funcoesContext) []string {
 	funcoesResult := make([]string, 0)
+	for _, ctx := range ctxs {
+		result := v.AddFuncToSymbolTable(ctx.IDENT())
+		funcoesResult = append(funcoesResult, result...)
+	}
 
 	return funcoesResult
 }
@@ -420,6 +423,8 @@ func (v *AlgumaVisitor) VisitIdentificador(ctx parser.IIdentificadorContext) []s
 		result := v.VisitExp_aritmetica(ctx.Exp_aritmetica(aux))
 
 		identificadorResult = append(identificadorResult, result...)
+
+		aux++
 	}
 
 	return identificadorResult
@@ -449,7 +454,14 @@ func (v *AlgumaVisitor) VisitTipo_variavel(ctx parser.ITipo_variavelContext) []s
 	ident := ctx.IDENT()
 
 	if ident != nil {
-		if !v.Scopes.CurrentScope().Exists(ident.GetText()) {
+		// TODO: Conferindo em todos os escopos, ou só apenas no escopo atual e acima?
+		exists := false
+		for _, scope := range v.Scopes.Stack {
+			if scope.Exists(ident.GetText()) {
+				exists = true
+			}
+		}
+		if !exists {
 			tipoVariavelResult = append(tipoVariavelResult,
 				semanticError(ident.GetSymbol(), fmt.Sprintf("tipo %v nao declarado", ident.GetText())),
 			)

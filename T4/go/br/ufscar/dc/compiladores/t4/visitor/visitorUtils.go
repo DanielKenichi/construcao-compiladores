@@ -13,8 +13,18 @@ func (v *AlgumaVisitor) AddVarToSymbolTable(variavel parser.IVariavelContext) []
 	addSymbolTableResult := make([]string, 0)
 
 	var varType symboltable.Type = symboltable.INVALIDO
+	var tipoType symboltable.Type = symboltable.INVALIDO
 
-	if variavel.Tipo().Registro() != nil {
+	// Se o tipo estiver no ctx como Registro, marca a variável como registro_var
+	for _, scope := range v.Scopes.Stack {
+		if scope.Exists(variavel.Tipo().GetText()) {
+			tipoType = scope.GetType(variavel.Tipo().GetText())
+		}
+	}
+	if tipoType == symboltable.REGISTRO {
+		varType = symboltable.REGISTRO_VAR
+		// v.AddRegVarToSymbolTable(variavel.Tipo().Registro())
+	} else if variavel.Tipo().Registro() != nil {
 		varType = symboltable.REGISTRO
 	} else if variavel.Tipo().Tipo_variavel().PONTEIRO() != nil {
 		varType = symboltable.PONTEIRO
@@ -26,6 +36,7 @@ func (v *AlgumaVisitor) AddVarToSymbolTable(variavel parser.IVariavelContext) []
 
 	for _, idents := range variavel.AllIdentificador() {
 		for _, identName := range idents.AllIDENT() {
+			// log.Printf("Adicionando variavel %v do tipo %v", identName, varType)
 			result := v.AddIdentifierToSymbolTable(identName, varType)
 
 			addSymbolTableResult = append(addSymbolTableResult, result...)
@@ -42,6 +53,45 @@ func (v *AlgumaVisitor) AddConstToSymbolTable(identifier antlr.TerminalNode, bas
 	result := v.AddIdentifierToSymbolTable(identifier, varType)
 
 	return result
+}
+
+func (v *AlgumaVisitor) AddFuncToSymbolTable(identifier antlr.TerminalNode) []string {
+
+	varType := symboltable.FUNCAO
+
+	result := v.AddIdentifierToSymbolTable(identifier, varType)
+
+	return result
+
+}
+
+func (v *AlgumaVisitor) AddRegToSymbolTable(identifier antlr.TerminalNode) []string {
+
+	varType := symboltable.REGISTRO
+
+	result := v.AddIdentifierToSymbolTable(identifier, varType)
+
+	return result
+
+}
+
+func (v *AlgumaVisitor) AddRegVarToSymbolTable(ctx parser.IRegistroContext) []string {
+
+	result := make([]string, 0)
+	// log.Printf("Adicionando registro %v", ctx.GetText())
+	// TODO: Declarar cada `struct.var: tipo` na tabela de símbolos com o seu tipo dentro da struct
+
+	// for _, variavel := range ctx.AllVariavel() {
+	// 	log.Printf("Adicionando variavel do registro: %v", variavel.GetText())
+	// 	// result = v.AddVarToSymbolTable(variavel)
+
+	// 	if len(result) > 0 {
+	// 		return result
+	// 	}
+	// }
+
+	return result
+
 }
 
 func MapBasicTypeToSymbolType(basicType parser.ITipo_basicoContext) symboltable.Type {
@@ -66,12 +116,12 @@ func MapBasicTypeToSymbolType(basicType parser.ITipo_basicoContext) symboltable.
 func (v *AlgumaVisitor) AddIdentifierToSymbolTable(identifier antlr.TerminalNode, varType symboltable.Type) []string {
 	result := make([]string, 0)
 
-	if v.Scopes.CurrentScope().Exists(identifier.GetText()) {
-		result = append(result,
-			semanticError(identifier.GetSymbol(), fmt.Sprintf("identificador %v ja declarado anteriormente", identifier.GetText())),
-		)
-
-		return result
+	for _, scope := range v.Scopes.Stack {
+		if scope.Exists(identifier.GetText()) {
+			result = append(result,
+				semanticError(identifier.GetSymbol(), fmt.Sprintf("identificador %v ja declarado anteriormente", identifier.GetText())),
+			)
+		}
 	}
 
 	v.Scopes.CurrentScope().AddSymbol(identifier.GetText(), varType)
@@ -87,7 +137,10 @@ func IsTypesCompatible(t1, t2 symboltable.Type) bool {
 
 	return t1 == t2 ||
 		(t1 == symboltable.INTEIRO && t2 == symboltable.REAL) ||
-		(t1 == symboltable.REAL && t2 == symboltable.INTEIRO)
+		(t1 == symboltable.REAL && t2 == symboltable.INTEIRO) ||
+		(t1 == symboltable.PONTEIRO && t2 == symboltable.ENDERECO) ||
+		(t1 == symboltable.ENDERECO && t2 == symboltable.PONTEIRO)
+
 }
 
 func (v *AlgumaVisitor) VerifyVarAttribution(atribuicao parser.ICmdAtribuicaoContext) []string {
@@ -106,11 +159,18 @@ func (v *AlgumaVisitor) VerifyVarAttribution(atribuicao parser.ICmdAtribuicaoCon
 
 	var attrType symboltable.Type
 
-	if atribuicao.PONTEIRO() != nil {
-		attrType = symboltable.PONTEIRO
-	} else {
-		attrType, result = v.VerifyExpression(atribuicao.Expressao())
-	}
+	// TODO: definir o tipo do ponteiro, para permimitir mudar o seu valor
+	/*
+		Exemplo:
+		declare valor: inteiro { int normal }
+		declare ponteiro: ^inteiro { ponteiro para int }
+		valor <- 100 { normal }
+		ponteiro <- &valor { normal }
+		^ponteiro <- 100 { esperado: normal }
+		^ponteiro <- "100" { esperado: erro }
+	*/
+
+	attrType, result = v.VerifyExpression(atribuicao.Expressao())
 
 	/*Se tiver um identificador nao declarado na expressao
 	o resultado vai ter pelo menos um erro semantico.
@@ -122,11 +182,41 @@ func (v *AlgumaVisitor) VerifyVarAttribution(atribuicao parser.ICmdAtribuicaoCon
 		return result
 	}
 
+	identSufix := ""
+	if atribuicao.Identificador().ABRECHAVE(0) != nil {
+		identSufix = atribuicao.Identificador().ABRECHAVE(0).GetText()
+		identSufix += atribuicao.Identificador().Exp_aritmetica(0).GetText()
+		identSufix += atribuicao.Identificador().FECHACHAVE(0).GetText()
+	}
+
+	if atribuicao.Identificador().PONTO(0) != nil {
+		identSufix = atribuicao.Identificador().PONTO(0).GetText()
+		identSufix += atribuicao.Identificador().IDENT(1).GetText()
+
+	}
+
 	identType := v.Scopes.CurrentScope().GetType(identifier.GetText())
 
+	// log.Printf("%v (%v) = %v (%v)", identifier, identType, atribuicao.Expressao().GetText(), attrType)
+	// log.Printf("%v = %v", identifier.GetText(), atribuicao.Expressao().GetText())
+	// log.Printf("%v = %v", identType, attrType)
+
+	// if atribuicao.Identificador().PONTO(0) != nil {
+	// 	log.Printf("Atribuicao para registro - %v%v%v",
+	// 		atribuicao.Identificador().IDENT(0).GetText(),
+	// 		atribuicao.Identificador().PONTO(0).GetText(),
+	// 		atribuicao.Identificador().IDENT(1).GetText())
+	// }
+
 	if !IsTypesCompatible(identType, attrType) {
+		identPrefix := ""
+
+		if identType == symboltable.PONTEIRO {
+			identPrefix = atribuicao.PONTEIRO().GetText()
+		}
+
 		result = append(result,
-			semanticError(identifier.GetSymbol(), fmt.Sprintf("atribuicao nao compativel para %v", identifier.GetText())),
+			semanticError(identifier.GetSymbol(), fmt.Sprintf("atribuicao nao compativel para %v%v%v", identPrefix, identifier.GetText(), identSufix)),
 		)
 	}
 
@@ -297,6 +387,7 @@ func (v *AlgumaVisitor) VerifyParcela(parcela parser.IParcelaContext) (symboltab
 			if !v.Scopes.CurrentScope().Exists(identifier.GetText()) {
 
 				result = append(result,
+					// TODO: Identificador não declarado, mas agora envolvendo também ponteiros, registros, funções
 					semanticError(identifier.GetSymbol(), fmt.Sprintf("identificador %v nao declarado", identifier.GetText())),
 				)
 
@@ -316,7 +407,7 @@ func (v *AlgumaVisitor) VerifyParcela(parcela parser.IParcelaContext) (symboltab
 
 	if parcela.Parcela_nao_unario() != nil {
 		if parcela.Parcela_nao_unario().ENDERECO() != nil {
-			return symboltable.PONTEIRO, result
+			return symboltable.ENDERECO, result
 		}
 
 		if parcela.Parcela_nao_unario().CADEIA() != nil {
