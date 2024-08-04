@@ -151,14 +151,9 @@ func (v *AlgumaVisitor) VisitCmdLeia(ctx parser.ICmdLeiaContext) []string {
 	cmdLeiaResult := make([]string, 0)
 
 	for _, ident := range ctx.AllIdentificador() {
-		argToRead := ident.IDENT(0)
+		result := v.VerifyIdentifier(ident)
 
-		if !v.Scopes.CurrentScope().Exists(argToRead.GetText()) {
-			cmdLeiaResult = append(cmdLeiaResult,
-				semanticError(argToRead.GetSymbol(), fmt.Sprintf("identificador %v nao declarado", argToRead.GetText())),
-			)
-		}
-
+		cmdLeiaResult = append(cmdLeiaResult, result...)
 	}
 
 	return cmdLeiaResult
@@ -314,7 +309,7 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 
 			variaveisResult = append(variaveisResult, result...)
 
-			result = v.AddVarToSymbolTable(ctx.Variavel())
+			result = v.AddVarToSymbolTable(ctx.Variavel(), v.Scopes.CurrentScope())
 
 			variaveisResult = append(variaveisResult, result...)
 			continue
@@ -342,7 +337,7 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 
 			variaveisResult = append(variaveisResult, result...)
 
-			result = v.AddRegToSymbolTable(ctx.IDENT())
+			result = v.AddRegTypeToSymbolTable(ctx.IDENT(), ctx.Registro())
 
 			variaveisResult = append(variaveisResult, result...)
 

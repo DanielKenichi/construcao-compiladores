@@ -2,55 +2,97 @@ package visitor
 
 import (
 	"fmt"
+	"log"
 
 	parser "github.com/DanielKenichi/construcao-compiladores/T4/antlr4/br/ufscar/dc/compiladores/t4/parser/Alguma"
 	"github.com/DanielKenichi/construcao-compiladores/T4/go/br/ufscar/dc/compiladores/t4/symboltable"
 	"github.com/antlr4-go/antlr/v4"
 )
 
-func (v *AlgumaVisitor) AddVarToSymbolTable(variavel parser.IVariavelContext) []string {
+func (v *AlgumaVisitor) AddVarToSymbolTable(variavel parser.IVariavelContext, table *symboltable.SymbolTable) []string {
 
 	addSymbolTableResult := make([]string, 0)
 
 	var varType symboltable.Type = symboltable.INVALIDO
-	var tipoType symboltable.Type = symboltable.INVALIDO
 
-	// Se o tipo estiver no ctx como Registro, marca a variável como registro_var
-	for _, scope := range v.Scopes.Stack {
-		if scope.Exists(variavel.Tipo().GetText()) {
-			tipoType = scope.GetType(variavel.Tipo().GetText())
-		}
-	}
-	if tipoType == symboltable.REGISTRO {
+	if variavel.Tipo().Registro() != nil {
 		varType = symboltable.REGISTRO_VAR
-		// v.AddRegVarToSymbolTable(variavel.Tipo().Registro())
-	} else if variavel.Tipo().Registro() != nil {
-		varType = symboltable.REGISTRO
 	} else if variavel.Tipo().Tipo_variavel().PONTEIRO() != nil {
 		varType = symboltable.PONTEIRO
-	} else {
+	} else if variavel.Tipo().Tipo_variavel().Tipo_basico() != nil {
 		basicType := variavel.Tipo().Tipo_variavel().Tipo_basico()
 
 		varType = MapBasicTypeToSymbolType(basicType)
+	} else { //Tipo variavel eh um ident de um registro
+		varType = symboltable.REGISTRO_VAR
 	}
 
 	for _, idents := range variavel.AllIdentificador() {
 		for _, identName := range idents.AllIDENT() {
-			// log.Printf("Adicionando variavel %v do tipo %v", identName, varType)
-			result := v.AddIdentifierToSymbolTable(identName, varType)
+			result := v.AddIdentifierToSymbolTable(identName, varType, table)
 
 			addSymbolTableResult = append(addSymbolTableResult, result...)
+
+			if varType == symboltable.REGISTRO_VAR {
+				if variavel.Tipo().Registro() != nil {
+					regTable := table.GetSymbol(identName.GetText()).InnerTable
+
+					result = v.AddRegInnerVarsToSymbolTable(variavel.Tipo().Registro(), regTable)
+
+					addSymbolTableResult = append(addSymbolTableResult, result...)
+				} else {
+					regSymbol := v.GetRegTypeSymbol(variavel.Tipo().Tipo_variavel().IDENT().GetText())
+
+					table.AddInnerTableToRegVar(identName.GetText(), *regSymbol.InnerTable)
+				}
+			}
 		}
 	}
 
 	return addSymbolTableResult
 }
 
+func (v *AlgumaVisitor) GetRegTypeSymbol(name string) *symboltable.Symbol {
+
+	for _, scope := range v.Scopes.Stack {
+		// log.Printf("Scanning Scope: %v %v", i, scope)
+		if scope.Exists(name) {
+			symbol := scope.GetSymbol(name)
+			// log.Printf("RegType found %v", symbol)
+			if symbol.SymbolType == symboltable.REGISTRO {
+				return symbol
+			}
+		}
+	}
+
+	// log.Printf("returning nil as reg is not declared")
+
+	return nil
+}
+
+func (v *AlgumaVisitor) GetRegVarSymbol(name string) *symboltable.Symbol {
+
+	for _, scope := range v.Scopes.Stack {
+		// log.Printf("Scanning Scope: %v %v", i, scope)
+		if scope.Exists(name) {
+			symbol := scope.GetSymbol(name)
+			// log.Printf("Regvar found %v", symbol)
+			if symbol.SymbolType == symboltable.REGISTRO_VAR {
+				return symbol
+			}
+		}
+	}
+
+	// log.Printf("returning nil as reg var is not declared")
+
+	return nil
+}
+
 func (v *AlgumaVisitor) AddConstToSymbolTable(identifier antlr.TerminalNode, basicType parser.ITipo_basicoContext) []string {
 
 	varType := MapBasicTypeToSymbolType(basicType)
 
-	result := v.AddIdentifierToSymbolTable(identifier, varType)
+	result := v.AddIdentifierToSymbolTable(identifier, varType, v.Scopes.CurrentScope())
 
 	return result
 }
@@ -59,36 +101,42 @@ func (v *AlgumaVisitor) AddFuncToSymbolTable(identifier antlr.TerminalNode) []st
 
 	varType := symboltable.FUNCAO
 
-	result := v.AddIdentifierToSymbolTable(identifier, varType)
+	result := v.AddIdentifierToSymbolTable(identifier, varType, v.Scopes.CurrentScope())
 
 	return result
 
 }
 
-func (v *AlgumaVisitor) AddRegToSymbolTable(identifier antlr.TerminalNode) []string {
+func (v *AlgumaVisitor) AddRegTypeToSymbolTable(identifier antlr.TerminalNode, reg parser.IRegistroContext) []string {
+	addRegResult := make([]string, 0)
 
 	varType := symboltable.REGISTRO
 
-	result := v.AddIdentifierToSymbolTable(identifier, varType)
+	result := v.AddIdentifierToSymbolTable(identifier, varType, v.Scopes.CurrentScope())
 
-	return result
+	addRegResult = append(addRegResult, result...)
+
+	regTable := v.Scopes.CurrentScope().GetSymbol(identifier.GetText()).InnerTable
+
+	result = v.AddRegInnerVarsToSymbolTable(reg, regTable)
+
+	addRegResult = append(addRegResult, result...)
+
+	return addRegResult
 
 }
 
-func (v *AlgumaVisitor) AddRegVarToSymbolTable(ctx parser.IRegistroContext) []string {
+func (v *AlgumaVisitor) AddRegInnerVarsToSymbolTable(reg parser.IRegistroContext, table *symboltable.SymbolTable) []string {
 
 	result := make([]string, 0)
-	// log.Printf("Adicionando registro %v", ctx.GetText())
-	// TODO: Declarar cada `struct.var: tipo` na tabela de símbolos com o seu tipo dentro da struct
 
-	// for _, variavel := range ctx.AllVariavel() {
-	// 	log.Printf("Adicionando variavel do registro: %v", variavel.GetText())
-	// 	// result = v.AddVarToSymbolTable(variavel)
+	for _, variavel := range reg.AllVariavel() {
+		result = v.AddVarToSymbolTable(variavel, table)
 
-	// 	if len(result) > 0 {
-	// 		return result
-	// 	}
-	// }
+		if len(result) > 0 {
+			return result
+		}
+	}
 
 	return result
 
@@ -113,7 +161,7 @@ func MapBasicTypeToSymbolType(basicType parser.ITipo_basicoContext) symboltable.
 	return symboltable.INVALIDO
 }
 
-func (v *AlgumaVisitor) AddIdentifierToSymbolTable(identifier antlr.TerminalNode, varType symboltable.Type) []string {
+func (v *AlgumaVisitor) AddIdentifierToSymbolTable(identifier antlr.TerminalNode, varType symboltable.Type, table *symboltable.SymbolTable) []string {
 	result := make([]string, 0)
 
 	for _, scope := range v.Scopes.Stack {
@@ -121,10 +169,11 @@ func (v *AlgumaVisitor) AddIdentifierToSymbolTable(identifier antlr.TerminalNode
 			result = append(result,
 				semanticError(identifier.GetSymbol(), fmt.Sprintf("identificador %v ja declarado anteriormente", identifier.GetText())),
 			)
+			return result
 		}
 	}
 
-	v.Scopes.CurrentScope().AddSymbol(identifier.GetText(), varType)
+	table.AddSymbol(identifier.GetText(), varType)
 
 	return result
 }
@@ -144,17 +193,11 @@ func IsTypesCompatible(t1, t2 symboltable.Type) bool {
 }
 
 func (v *AlgumaVisitor) VerifyVarAttribution(atribuicao parser.ICmdAtribuicaoContext) []string {
-	result := make([]string, 0)
 
-	identifier := atribuicao.Identificador().IDENT(0)
+	varAttrResult := v.VerifyIdentifier(atribuicao.Identificador())
 
-	if !v.Scopes.CurrentScope().Exists(identifier.GetText()) {
-
-		result = append(result,
-			semanticError(identifier.GetSymbol(), fmt.Sprintf("identificador %v nao declarado", identifier.GetText())),
-		)
-
-		return result
+	if len(varAttrResult) > 0 {
+		return varAttrResult
 	}
 
 	var attrType symboltable.Type
@@ -170,16 +213,17 @@ func (v *AlgumaVisitor) VerifyVarAttribution(atribuicao parser.ICmdAtribuicaoCon
 		^ponteiro <- "100" { esperado: erro }
 	*/
 
-	attrType, result = v.VerifyExpression(atribuicao.Expressao())
+	attrType, varAttrResult = v.VerifyExpression(atribuicao.Expressao())
 
+	log.Printf("attrType %v", attrType)
 	/*Se tiver um identificador nao declarado na expressao
 	o resultado vai ter pelo menos um erro semantico.
 	Dessa forma, retornar ele antes para nao ter tambem erro de atribuicao
 	incompativel, uma vez que um identificador nao declarado retorna
 	tipo invalido para a expressao */
 
-	if len(result) > 0 {
-		return result
+	if len(varAttrResult) > 0 {
+		return varAttrResult
 	}
 
 	identSufix := ""
@@ -189,13 +233,22 @@ func (v *AlgumaVisitor) VerifyVarAttribution(atribuicao parser.ICmdAtribuicaoCon
 		identSufix += atribuicao.Identificador().FECHACHAVE(0).GetText()
 	}
 
-	if atribuicao.Identificador().PONTO(0) != nil {
-		identSufix = atribuicao.Identificador().PONTO(0).GetText()
-		identSufix += atribuicao.Identificador().IDENT(1).GetText()
+	var identifier antlr.TerminalNode
+	scopeToVerify := v.Scopes.CurrentScope()
+	identPrefix := ""
+	//Se tiver mais de um ident, estamos lidando com um registro
+	for i, ident := range atribuicao.Identificador().AllIDENT() {
+		identifier = ident
+		log.Printf("identVerified %v", ident.GetText())
+		regVarSymbol := v.GetRegVarSymbol(ident.GetText())
 
+		if regVarSymbol != nil && atribuicao.Identificador().IDENT(i+1) != nil {
+			identPrefix += ident.GetText() + "."
+			scopeToVerify = regVarSymbol.InnerTable
+		}
 	}
 
-	identType := v.Scopes.CurrentScope().GetType(identifier.GetText())
+	identType := scopeToVerify.GetType(identifier.GetText())
 
 	// log.Printf("%v (%v) = %v (%v)", identifier, identType, atribuicao.Expressao().GetText(), attrType)
 	// log.Printf("%v = %v", identifier.GetText(), atribuicao.Expressao().GetText())
@@ -208,19 +261,53 @@ func (v *AlgumaVisitor) VerifyVarAttribution(atribuicao parser.ICmdAtribuicaoCon
 	// 		atribuicao.Identificador().IDENT(1).GetText())
 	// }
 
+	log.Printf("Verifying var %v with type %v and attrType %v", identifier.GetText(), identType, attrType)
+
 	if !IsTypesCompatible(identType, attrType) {
-		identPrefix := ""
 
 		if identType == symboltable.PONTEIRO {
 			identPrefix = atribuicao.PONTEIRO().GetText()
 		}
 
-		result = append(result,
+		varAttrResult = append(varAttrResult,
 			semanticError(identifier.GetSymbol(), fmt.Sprintf("atribuicao nao compativel para %v%v%v", identPrefix, identifier.GetText(), identSufix)),
 		)
 	}
 
-	return result
+	return varAttrResult
+}
+
+func (v *AlgumaVisitor) VerifyIdentifier(ident parser.IIdentificadorContext) []string {
+	identResult := make([]string, 0)
+
+	scopeToVerify := v.Scopes.CurrentScope()
+	prefix := ""
+
+	//Se tiver mais de um ident dentro de um identificador, estamos lidando com um registro
+	for _, argToVerify := range ident.AllIDENT() {
+
+		// log.Printf("Scope verified %v, argToVerify %v", scopeToVerify, argToVerify)
+
+		if !scopeToVerify.Exists(argToVerify.GetText()) {
+			identResult = append(identResult,
+				semanticError(argToVerify.GetSymbol(), fmt.Sprintf("identificador %v nao declarado", prefix+argToVerify.GetText())),
+			)
+		}
+
+		regSymbol := v.GetRegVarSymbol(argToVerify.GetText())
+
+		if regSymbol != nil {
+			scopeToVerify = regSymbol.InnerTable
+		}
+
+		prefix += argToVerify.GetText() + "."
+	}
+
+	if len(identResult) > 1 {
+		identResult = identResult[len(identResult)-1:]
+	}
+
+	return identResult
 }
 
 func (v *AlgumaVisitor) VerifyExpression(expression parser.IExpressaoContext) (symboltable.Type, []string) {
@@ -381,20 +468,16 @@ func (v *AlgumaVisitor) VerifyParcela(parcela parser.IParcelaContext) (symboltab
 	if parcela.Parcela_unario() != nil {
 
 		if parcela.Parcela_unario().Identificador() != nil {
+			identifier := parcela.Parcela_unario().Identificador()
+			identResult := v.VerifyIdentifier(identifier)
 
-			identifier := parcela.Parcela_unario().Identificador().IDENT(0)
-
-			if !v.Scopes.CurrentScope().Exists(identifier.GetText()) {
-
-				result = append(result,
-					// TODO: Identificador não declarado, mas agora envolvendo também ponteiros, registros, funções
-					semanticError(identifier.GetSymbol(), fmt.Sprintf("identificador %v nao declarado", identifier.GetText())),
-				)
+			if len(identResult) > 0 {
+				result = append(result, identResult...)
 
 				return symboltable.INVALIDO, result
 			}
 
-			return v.Scopes.CurrentScope().GetType(identifier.GetText()), result
+			return v.GetIdentifierType(identifier), result
 
 		} else if parcela.Parcela_unario().NUM_INT() != nil {
 			return symboltable.INTEIRO, result
@@ -416,4 +499,25 @@ func (v *AlgumaVisitor) VerifyParcela(parcela parser.IParcelaContext) (symboltab
 	}
 
 	return symboltable.INVALIDO, result
+}
+
+func (v *AlgumaVisitor) GetIdentifierType(identifier parser.IIdentificadorContext) symboltable.Type {
+
+	scopeToVerify := v.Scopes.CurrentScope()
+	var identName string
+
+	for i, ident := range identifier.AllIDENT() {
+		log.Printf("ScopeVerified %v identName %v", scopeToVerify, identName)
+
+		identName = ident.GetText()
+		regVarSymbol := v.GetRegVarSymbol(identName)
+
+		if regVarSymbol != nil && identifier.IDENT(i+1) != nil {
+			scopeToVerify = regVarSymbol.InnerTable
+		}
+	}
+
+	log.Printf("Last scope %v", scopeToVerify)
+
+	return scopeToVerify.GetType(identName)
 }

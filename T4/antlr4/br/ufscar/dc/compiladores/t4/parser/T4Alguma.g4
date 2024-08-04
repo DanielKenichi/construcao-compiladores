@@ -159,7 +159,7 @@ parcela
   : op_unario? parcela_unario | parcela_nao_unario
   ;
 parcela_unario
-    : PONTEIRO? identificador
+  : PONTEIRO? identificador
 	| IDENT ABREPAR expressao (VIRGULA expressao)* FECHAPAR
 	| NUM_INT
 	| NUM_REAL
