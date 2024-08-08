@@ -27,7 +27,7 @@ type Symbol struct {
 	//InnerTable é nil se o simbolo nao for REGISTRO, FUNCAO ou PROCEDIMENTO
 	InnerTable *SymbolTable
 
-	//Só deve ser usado se o símbolo for uma FUNCAO ou PROCEDIMENTO
+	//Só deve ser usado se o símbolo for uma FUNCAO
 	//Salvamos como string pois se o retorno for um registro precisamos
 	//do identificador desse registro
 	ReturnType string

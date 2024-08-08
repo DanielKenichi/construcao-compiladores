@@ -2,10 +2,10 @@ package visitor
 
 import (
 	"fmt"
-	"log"
 
 	parser "github.com/DanielKenichi/construcao-compiladores/T4/antlr4/br/ufscar/dc/compiladores/t4/parser/Alguma"
 	"github.com/DanielKenichi/construcao-compiladores/T4/go/br/ufscar/dc/compiladores/t4/scope"
+	"github.com/DanielKenichi/construcao-compiladores/T4/go/br/ufscar/dc/compiladores/t4/symboltable"
 	"github.com/antlr4-go/antlr/v4"
 )
 
@@ -69,6 +69,13 @@ func (v *AlgumaVisitor) VisitCorpo(ctx parser.ICorpoContext) []string {
 
 	corpoResult = append(corpoResult, result...)
 
+	for _, cmd := range ctx.AllCmd() {
+		if cmd.CmdRetorne() != nil {
+			corpoResult = append(corpoResult,
+				semanticError(cmd.CmdRetorne().RETORNE().GetSymbol(), "comando retorne nao permitido nesse escopo"))
+		}
+	}
+
 	result = v.VisitCmd(ctx.AllCmd())
 
 	corpoResult = append(corpoResult, result...)
@@ -83,7 +90,6 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 
 		if ctx.CmdLeia() != nil {
 
-			log.Print("Visit Leia")
 			result := v.VisitCmdLeia(ctx.CmdLeia())
 
 			cmdResult = append(cmdResult, result...)
@@ -91,7 +97,6 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdEscreva() != nil {
-			log.Print("Visit Escreva")
 
 			result := v.VisitCmdEscreva(ctx.CmdEscreva())
 
@@ -101,7 +106,6 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdSe() != nil {
-			log.Print("Visit Se")
 
 			result := v.VisitCmdSe(ctx.CmdSe())
 
@@ -111,7 +115,6 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdCaso() != nil {
-			log.Print("Visit Caso")
 
 			result := v.VisitCmdCaso(ctx.CmdCaso())
 
@@ -121,7 +124,6 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdPara() != nil {
-			log.Print("Visit Para")
 
 			result := v.VisitCmdPara(ctx.CmdPara())
 
@@ -131,7 +133,6 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdEnquanto() != nil {
-			log.Print("Visit Enquanto")
 
 			result := v.VisitCmdEnquanto(ctx.CmdEnquanto())
 
@@ -141,7 +142,6 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdFaca() != nil {
-			log.Print("Visit Faca")
 
 			result := v.VisitCmdFaca(ctx.CmdFaca())
 
@@ -151,7 +151,6 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdAtribuicao() != nil {
-			log.Print("Visit Attr")
 
 			result := v.VisitCmdAtribuicao(ctx.CmdAtribuicao())
 
@@ -161,9 +160,17 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdChamada() != nil {
-			log.Print("Visit Chamada")
 
 			result := v.VisitCmdChamada(ctx.CmdChamada())
+
+			cmdResult = append(cmdResult, result...)
+
+			continue
+		}
+
+		if ctx.CmdRetorne() != nil {
+
+			result := v.VisitCmdRetorne(ctx.CmdRetorne())
 
 			cmdResult = append(cmdResult, result...)
 
@@ -308,6 +315,12 @@ func (v *AlgumaVisitor) VisitCmdChamada(ctx parser.ICmdChamadaContext) []string 
 	return cmdChamadaResult
 }
 
+func (v *AlgumaVisitor) VisitCmdRetorne(ctx parser.ICmdRetorneContext) []string {
+	cmdChamadaResult := make([]string, 0)
+
+	return cmdChamadaResult
+}
+
 func (v *AlgumaVisitor) VisitSelecao(ctx parser.ISelecaoContext) []string {
 	selecaoResult := make([]string, 0)
 
@@ -388,13 +401,24 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 }
 
 func (v *AlgumaVisitor) VisitDeclaracoes_funcoes(ctxs []parser.IDeclaracoes_funcoesContext) []string {
-
-	log.Print("Visit declaracao funcoes")
+	//TODO conferir tipo de retorno com o escopo
 
 	funcoesResult := make([]string, 0)
 	for _, ctx := range ctxs {
 		result := v.AddFuncToSymbolTable(ctx)
 		funcoesResult = append(funcoesResult, result...)
+
+		symbol := v.GetFuncVarSymbol(ctx.IDENT().GetText())
+
+		if symbol.SymbolType == symboltable.PROCEDIMENTO {
+			for _, cmd := range ctx.AllCmd() {
+				if cmd.CmdRetorne() != nil {
+					funcoesResult = append(funcoesResult,
+						semanticError(cmd.CmdRetorne().RETORNE().GetSymbol(), "comando retorne nao permitido nesse escopo"))
+				}
+			}
+		}
+
 	}
 
 	return funcoesResult
