@@ -15,7 +15,6 @@ const (
 	ENDERECO
 	FUNCAO
 	PROCEDIMENTO
-	TIPO
 	INVALIDO
 )
 
@@ -25,8 +24,13 @@ type SymbolTable struct {
 
 type Symbol struct {
 	SymbolType Type
-	//InnerTable is nil if Symbol is not a REGISTRO
+	//InnerTable é nil se o simbolo nao for REGISTRO, FUNCAO ou PROCEDIMENTO
 	InnerTable *SymbolTable
+
+	//Só deve ser usado se o símbolo for uma FUNCAO ou PROCEDIMENTO
+	//Salvamos como string pois se o retorno for um registro precisamos
+	//do identificador desse registro
+	ReturnType string
 }
 
 func New() *SymbolTable {
@@ -39,7 +43,9 @@ func (s *SymbolTable) NewSymbol(name string, symbolType Type) *Symbol {
 
 	var innerTable *SymbolTable = nil
 
-	if symbolType == REGISTRO || symbolType == REGISTRO_VAR {
+	if symbolType == REGISTRO || symbolType == REGISTRO_VAR ||
+		symbolType == FUNCAO || symbolType == PROCEDIMENTO {
+
 		innerTable = New()
 	}
 
@@ -62,6 +68,12 @@ func (s *SymbolTable) AddInnerTableToRegVar(name string, table SymbolTable) {
 	symbol := s.GetSymbol(name)
 
 	symbol.InnerTable = &table
+}
+
+func (s *SymbolTable) AddReturnTypeToSymbol(name string, returnType string) {
+	symbol := s.GetSymbol(name)
+
+	symbol.ReturnType = returnType
 }
 
 func (s *SymbolTable) Exists(name string) bool {

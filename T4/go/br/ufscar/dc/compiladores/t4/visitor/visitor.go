@@ -2,6 +2,7 @@ package visitor
 
 import (
 	"fmt"
+	"log"
 
 	parser "github.com/DanielKenichi/construcao-compiladores/T4/antlr4/br/ufscar/dc/compiladores/t4/parser/Alguma"
 	"github.com/DanielKenichi/construcao-compiladores/T4/go/br/ufscar/dc/compiladores/t4/scope"
@@ -81,6 +82,8 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 	for _, ctx := range ctxs {
 
 		if ctx.CmdLeia() != nil {
+
+			log.Print("Visit Leia")
 			result := v.VisitCmdLeia(ctx.CmdLeia())
 
 			cmdResult = append(cmdResult, result...)
@@ -88,6 +91,8 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdEscreva() != nil {
+			log.Print("Visit Escreva")
+
 			result := v.VisitCmdEscreva(ctx.CmdEscreva())
 
 			cmdResult = append(cmdResult, result...)
@@ -96,6 +101,8 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdSe() != nil {
+			log.Print("Visit Se")
+
 			result := v.VisitCmdSe(ctx.CmdSe())
 
 			cmdResult = append(cmdResult, result...)
@@ -104,6 +111,8 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdCaso() != nil {
+			log.Print("Visit Caso")
+
 			result := v.VisitCmdCaso(ctx.CmdCaso())
 
 			cmdResult = append(cmdResult, result...)
@@ -112,6 +121,8 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdPara() != nil {
+			log.Print("Visit Para")
+
 			result := v.VisitCmdPara(ctx.CmdPara())
 
 			cmdResult = append(cmdResult, result...)
@@ -120,6 +131,8 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdEnquanto() != nil {
+			log.Print("Visit Enquanto")
+
 			result := v.VisitCmdEnquanto(ctx.CmdEnquanto())
 
 			cmdResult = append(cmdResult, result...)
@@ -128,6 +141,8 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdFaca() != nil {
+			log.Print("Visit Faca")
+
 			result := v.VisitCmdFaca(ctx.CmdFaca())
 
 			cmdResult = append(cmdResult, result...)
@@ -136,7 +151,19 @@ func (v *AlgumaVisitor) VisitCmd(ctxs []parser.ICmdContext) []string {
 		}
 
 		if ctx.CmdAtribuicao() != nil {
+			log.Print("Visit Attr")
+
 			result := v.VisitCmdAtribuicao(ctx.CmdAtribuicao())
+
+			cmdResult = append(cmdResult, result...)
+
+			continue
+		}
+
+		if ctx.CmdChamada() != nil {
+			log.Print("Visit Chamada")
+
+			result := v.VisitCmdChamada(ctx.CmdChamada())
 
 			cmdResult = append(cmdResult, result...)
 
@@ -269,6 +296,18 @@ func (v *AlgumaVisitor) VisitCmdAtribuicao(ctx parser.ICmdAtribuicaoContext) []s
 	return cmdAtibuicaoResult
 }
 
+func (v *AlgumaVisitor) VisitCmdChamada(ctx parser.ICmdChamadaContext) []string {
+	cmdChamadaResult := make([]string, 0)
+
+	ident := ctx.IDENT()
+
+	result := v.VerifyFuncCall(ident, ctx.AllExpressao())
+
+	cmdChamadaResult = append(cmdChamadaResult, result...)
+
+	return cmdChamadaResult
+}
+
 func (v *AlgumaVisitor) VisitSelecao(ctx parser.ISelecaoContext) []string {
 	selecaoResult := make([]string, 0)
 
@@ -349,9 +388,12 @@ func (v *AlgumaVisitor) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_va
 }
 
 func (v *AlgumaVisitor) VisitDeclaracoes_funcoes(ctxs []parser.IDeclaracoes_funcoesContext) []string {
+
+	log.Print("Visit declaracao funcoes")
+
 	funcoesResult := make([]string, 0)
 	for _, ctx := range ctxs {
-		result := v.AddFuncToSymbolTable(ctx.IDENT())
+		result := v.AddFuncToSymbolTable(ctx)
 		funcoesResult = append(funcoesResult, result...)
 	}
 
@@ -449,13 +491,8 @@ func (v *AlgumaVisitor) VisitTipo_variavel(ctx parser.ITipo_variavelContext) []s
 	ident := ctx.IDENT()
 
 	if ident != nil {
-		// TODO: Conferindo em todos os escopos, ou só apenas no escopo atual e acima?
-		exists := false
-		for _, scope := range v.Scopes.Stack {
-			if scope.Exists(ident.GetText()) {
-				exists = true
-			}
-		}
+		exists := v.VerifyIdentOnValidScopes(ident)
+
 		if !exists {
 			tipoVariavelResult = append(tipoVariavelResult,
 				semanticError(ident.GetSymbol(), fmt.Sprintf("tipo %v nao declarado", ident.GetText())),

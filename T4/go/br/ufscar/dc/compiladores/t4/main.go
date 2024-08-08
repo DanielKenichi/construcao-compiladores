@@ -91,7 +91,7 @@ func main() {
 	tree := parser.Programa()
 
 	// -----------------------------------
-	// ANALISE SEMÂNTICA (T3)
+	// ANALISE SEMÂNTICA (T3) e (T4)
 	// -----------------------------------
 
 	algumaVisitor := visitor.New()

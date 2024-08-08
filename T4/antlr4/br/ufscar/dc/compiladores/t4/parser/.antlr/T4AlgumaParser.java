@@ -150,6 +150,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_programa; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterPrograma(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitPrograma(this);
+		}
 	}
 
 	public final ProgramaContext programa() throws RecognitionException {
@@ -197,6 +205,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declaracoes; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterDeclaracoes(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitDeclaracoes(this);
+		}
 	}
 
 	public final DeclaracoesContext declaracoes() throws RecognitionException {
@@ -274,6 +290,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declaracoes_variaveis; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterDeclaracoes_variaveis(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitDeclaracoes_variaveis(this);
+		}
 	}
 
 	public final Declaracoes_variaveisContext declaracoes_variaveis() throws RecognitionException {
@@ -357,6 +381,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_variavel; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterVariavel(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitVariavel(this);
+		}
 	}
 
 	public final VariavelContext variavel() throws RecognitionException {
@@ -429,6 +461,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_identificador; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterIdentificador(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitIdentificador(this);
+		}
 	}
 
 	public final IdentificadorContext identificador() throws RecognitionException {
@@ -505,6 +545,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_exp_aritmetica; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterExp_aritmetica(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitExp_aritmetica(this);
+		}
 	}
 
 	public final Exp_aritmeticaContext exp_aritmetica() throws RecognitionException {
@@ -565,6 +613,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_termo; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterTermo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitTermo(this);
+		}
 	}
 
 	public final TermoContext termo() throws RecognitionException {
@@ -623,6 +679,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_fator; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterFator(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitFator(this);
+		}
 	}
 
 	public final FatorContext fator() throws RecognitionException {
@@ -671,6 +735,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op1; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp1(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp1(this);
+		}
 	}
 
 	public final Op1Context op1() throws RecognitionException {
@@ -711,6 +783,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op2; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp2(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp2(this);
+		}
 	}
 
 	public final Op2Context op2() throws RecognitionException {
@@ -750,6 +830,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op3; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp3(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp3(this);
+		}
 	}
 
 	public final Op3Context op3() throws RecognitionException {
@@ -788,6 +876,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parcela; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParcela(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParcela(this);
+		}
 	}
 
 	public final ParcelaContext parcela() throws RecognitionException {
@@ -868,6 +964,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parcela_unario; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParcela_unario(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParcela_unario(this);
+		}
 	}
 
 	public final Parcela_unarioContext parcela_unario() throws RecognitionException {
@@ -969,6 +1073,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op_unario; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp_unario(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp_unario(this);
+		}
 	}
 
 	public final Op_unarioContext op_unario() throws RecognitionException {
@@ -1003,6 +1115,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parcela_nao_unario; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParcela_nao_unario(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParcela_nao_unario(this);
+		}
 	}
 
 	public final Parcela_nao_unarioContext parcela_nao_unario() throws RecognitionException {
@@ -1055,6 +1175,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_tipo; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterTipo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitTipo(this);
+		}
 	}
 
 	public final TipoContext tipo() throws RecognitionException {
@@ -1108,6 +1236,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_tipo_basico; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterTipo_basico(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitTipo_basico(this);
+		}
 	}
 
 	public final Tipo_basicoContext tipo_basico() throws RecognitionException {
@@ -1151,6 +1287,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_tipo_variavel; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterTipo_variavel(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitTipo_variavel(this);
+		}
 	}
 
 	public final Tipo_variavelContext tipo_variavel() throws RecognitionException {
@@ -1215,6 +1359,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_valor_constante; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterValor_constante(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitValor_constante(this);
+		}
 	}
 
 	public final Valor_constanteContext valor_constante() throws RecognitionException {
@@ -1261,6 +1413,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_registro; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterRegistro(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitRegistro(this);
+		}
 	}
 
 	public final RegistroContext registro() throws RecognitionException {
@@ -1322,6 +1482,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parametro; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParametro(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParametro(this);
+		}
 	}
 
 	public final ParametroContext parametro() throws RecognitionException {
@@ -1392,6 +1560,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parametros; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParametros(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParametros(this);
+		}
 	}
 
 	public final ParametrosContext parametros() throws RecognitionException {
@@ -1464,6 +1640,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declaracoes_funcoes; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterDeclaracoes_funcoes(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitDeclaracoes_funcoes(this);
+		}
 	}
 
 	public final Declaracoes_funcoesContext declaracoes_funcoes() throws RecognitionException {
@@ -1617,6 +1801,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_corpo; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCorpo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCorpo(this);
+		}
 	}
 
 	public final CorpoContext corpo() throws RecognitionException {
@@ -1703,6 +1895,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmd(this);
+		}
 	}
 
 	public final CmdContext cmd() throws RecognitionException {
@@ -1818,6 +2018,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdLeia; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdLeia(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdLeia(this);
+		}
 	}
 
 	public final CmdLeiaContext cmdLeia() throws RecognitionException {
@@ -1903,6 +2111,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdEscreva; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdEscreva(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdEscreva(this);
+		}
 	}
 
 	public final CmdEscrevaContext cmdEscreva() throws RecognitionException {
@@ -1971,6 +2187,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdSe; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdSe(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdSe(this);
+		}
 	}
 
 	public final CmdSeContext cmdSe() throws RecognitionException {
@@ -2063,6 +2287,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdCaso; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdCaso(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdCaso(this);
+		}
 	}
 
 	public final CmdCasoContext cmdCaso() throws RecognitionException {
@@ -2145,6 +2377,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdPara; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdPara(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdPara(this);
+		}
 	}
 
 	public final CmdParaContext cmdPara() throws RecognitionException {
@@ -2215,6 +2455,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdEnquanto; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdEnquanto(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdEnquanto(this);
+		}
 	}
 
 	public final CmdEnquantoContext cmdEnquanto() throws RecognitionException {
@@ -2276,6 +2524,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdFaca; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdFaca(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdFaca(this);
+		}
 	}
 
 	public final CmdFacaContext cmdFaca() throws RecognitionException {
@@ -2332,6 +2588,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdAtribuicao; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdAtribuicao(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdAtribuicao(this);
+		}
 	}
 
 	public final CmdAtribuicaoContext cmdAtribuicao() throws RecognitionException {
@@ -2389,6 +2653,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdChamada; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdChamada(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdChamada(this);
+		}
 	}
 
 	public final CmdChamadaContext cmdChamada() throws RecognitionException {
@@ -2445,6 +2717,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdRetorne; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdRetorne(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdRetorne(this);
+		}
 	}
 
 	public final CmdRetorneContext cmdRetorne() throws RecognitionException {
@@ -2482,6 +2762,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_selecao; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterSelecao(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitSelecao(this);
+		}
 	}
 
 	public final SelecaoContext selecao() throws RecognitionException {
@@ -2534,6 +2822,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_item_selecao; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterItem_selecao(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitItem_selecao(this);
+		}
 	}
 
 	public final Item_selecaoContext item_selecao() throws RecognitionException {
@@ -2590,6 +2886,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_constantes; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterConstantes(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitConstantes(this);
+		}
 	}
 
 	public final ConstantesContext constantes() throws RecognitionException {
@@ -2647,6 +2951,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_numero_intervalo; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterNumero_intervalo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitNumero_intervalo(this);
+		}
 	}
 
 	public final Numero_intervaloContext numero_intervalo() throws RecognitionException {
@@ -2718,6 +3030,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_exp_relacional; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterExp_relacional(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitExp_relacional(this);
+		}
 	}
 
 	public final Exp_relacionalContext exp_relacional() throws RecognitionException {
@@ -2766,6 +3086,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op_relacional; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp_relacional(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp_relacional(this);
+		}
 	}
 
 	public final Op_relacionalContext op_relacional() throws RecognitionException {
@@ -2816,6 +3144,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expressao; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterExpressao(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitExpressao(this);
+		}
 	}
 
 	public final ExpressaoContext expressao() throws RecognitionException {
@@ -2874,6 +3210,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_termo_logico; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterTermo_logico(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitTermo_logico(this);
+		}
 	}
 
 	public final Termo_logicoContext termo_logico() throws RecognitionException {
@@ -2924,6 +3268,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_fator_logico; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterFator_logico(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitFator_logico(this);
+		}
 	}
 
 	public final Fator_logicoContext fator_logico() throws RecognitionException {
@@ -2969,6 +3321,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parcela_logica; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParcela_logica(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParcela_logica(this);
+		}
 	}
 
 	public final Parcela_logicaContext parcela_logica() throws RecognitionException {
@@ -3031,6 +3391,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op_logico_1; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp_logico_1(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp_logico_1(this);
+		}
 	}
 
 	public final Op_logico_1Context op_logico_1() throws RecognitionException {
@@ -3061,6 +3429,14 @@ public class T4AlgumaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op_logico_2; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp_logico_2(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp_logico_2(this);
+		}
 	}
 
 	public final Op_logico_2Context op_logico_2() throws RecognitionException {
