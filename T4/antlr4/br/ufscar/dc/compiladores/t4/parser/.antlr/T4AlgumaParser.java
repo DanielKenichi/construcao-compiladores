@@ -1,4 +1,4 @@
-// Generated from /home/lucky/UFSCAR/Compiladores/construcao-compiladores/T3/antlr4/br/ufscar/dc/compiladores/t3/parser/T3AlgumaParser.g4 by ANTLR 4.13.1
+// Generated from /home/lucky/UFSCAR/Compiladores/construcao-compiladores/T4/antlr4/br/ufscar/dc/compiladores/t4/parser/T4Alguma.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
-public class T3AlgumaParserParser extends Parser {
+public class T4AlgumaParser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.13.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -120,7 +120,7 @@ public class T3AlgumaParserParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "T3AlgumaParser.g4"; }
+	public String getGrammarFileName() { return "T4Alguma.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -131,7 +131,7 @@ public class T3AlgumaParserParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public T3AlgumaParserParser(TokenStream input) {
+	public T4AlgumaParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -141,15 +141,23 @@ public class T3AlgumaParserParser extends Parser {
 		public DeclaracoesContext declaracoes() {
 			return getRuleContext(DeclaracoesContext.class,0);
 		}
-		public TerminalNode ALGORITMO() { return getToken(T3AlgumaParserParser.ALGORITMO, 0); }
+		public TerminalNode ALGORITMO() { return getToken(T4AlgumaParser.ALGORITMO, 0); }
 		public CorpoContext corpo() {
 			return getRuleContext(CorpoContext.class,0);
 		}
-		public TerminalNode FIM_ALGORITMO() { return getToken(T3AlgumaParserParser.FIM_ALGORITMO, 0); }
+		public TerminalNode FIM_ALGORITMO() { return getToken(T4AlgumaParser.FIM_ALGORITMO, 0); }
 		public ProgramaContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_programa; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterPrograma(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitPrograma(this);
+		}
 	}
 
 	public final ProgramaContext programa() throws RecognitionException {
@@ -197,6 +205,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declaracoes; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterDeclaracoes(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitDeclaracoes(this);
+		}
 	}
 
 	public final DeclaracoesContext declaracoes() throws RecognitionException {
@@ -252,21 +268,21 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Declaracoes_variaveisContext extends ParserRuleContext {
-		public TerminalNode DECLARE() { return getToken(T3AlgumaParserParser.DECLARE, 0); }
+		public TerminalNode DECLARE() { return getToken(T4AlgumaParser.DECLARE, 0); }
 		public VariavelContext variavel() {
 			return getRuleContext(VariavelContext.class,0);
 		}
-		public TerminalNode CONSTANTE() { return getToken(T3AlgumaParserParser.CONSTANTE, 0); }
-		public TerminalNode IDENT() { return getToken(T3AlgumaParserParser.IDENT, 0); }
-		public TerminalNode DOISPONTOS() { return getToken(T3AlgumaParserParser.DOISPONTOS, 0); }
+		public TerminalNode CONSTANTE() { return getToken(T4AlgumaParser.CONSTANTE, 0); }
+		public TerminalNode IDENT() { return getToken(T4AlgumaParser.IDENT, 0); }
+		public TerminalNode DOISPONTOS() { return getToken(T4AlgumaParser.DOISPONTOS, 0); }
 		public Tipo_basicoContext tipo_basico() {
 			return getRuleContext(Tipo_basicoContext.class,0);
 		}
-		public TerminalNode IGUAL() { return getToken(T3AlgumaParserParser.IGUAL, 0); }
+		public TerminalNode IGUAL() { return getToken(T4AlgumaParser.IGUAL, 0); }
 		public Valor_constanteContext valor_constante() {
 			return getRuleContext(Valor_constanteContext.class,0);
 		}
-		public TerminalNode TIPO() { return getToken(T3AlgumaParserParser.TIPO, 0); }
+		public TerminalNode TIPO() { return getToken(T4AlgumaParser.TIPO, 0); }
 		public RegistroContext registro() {
 			return getRuleContext(RegistroContext.class,0);
 		}
@@ -274,6 +290,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declaracoes_variaveis; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterDeclaracoes_variaveis(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitDeclaracoes_variaveis(this);
+		}
 	}
 
 	public final Declaracoes_variaveisContext declaracoes_variaveis() throws RecognitionException {
@@ -345,18 +369,26 @@ public class T3AlgumaParserParser extends Parser {
 		public IdentificadorContext identificador(int i) {
 			return getRuleContext(IdentificadorContext.class,i);
 		}
-		public TerminalNode DOISPONTOS() { return getToken(T3AlgumaParserParser.DOISPONTOS, 0); }
+		public TerminalNode DOISPONTOS() { return getToken(T4AlgumaParser.DOISPONTOS, 0); }
 		public TipoContext tipo() {
 			return getRuleContext(TipoContext.class,0);
 		}
-		public List<TerminalNode> VIRGULA() { return getTokens(T3AlgumaParserParser.VIRGULA); }
+		public List<TerminalNode> VIRGULA() { return getTokens(T4AlgumaParser.VIRGULA); }
 		public TerminalNode VIRGULA(int i) {
-			return getToken(T3AlgumaParserParser.VIRGULA, i);
+			return getToken(T4AlgumaParser.VIRGULA, i);
 		}
 		public VariavelContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_variavel; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterVariavel(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitVariavel(this);
+		}
 	}
 
 	public final VariavelContext variavel() throws RecognitionException {
@@ -403,17 +435,17 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class IdentificadorContext extends ParserRuleContext {
-		public List<TerminalNode> IDENT() { return getTokens(T3AlgumaParserParser.IDENT); }
+		public List<TerminalNode> IDENT() { return getTokens(T4AlgumaParser.IDENT); }
 		public TerminalNode IDENT(int i) {
-			return getToken(T3AlgumaParserParser.IDENT, i);
+			return getToken(T4AlgumaParser.IDENT, i);
 		}
-		public List<TerminalNode> PONTO() { return getTokens(T3AlgumaParserParser.PONTO); }
+		public List<TerminalNode> PONTO() { return getTokens(T4AlgumaParser.PONTO); }
 		public TerminalNode PONTO(int i) {
-			return getToken(T3AlgumaParserParser.PONTO, i);
+			return getToken(T4AlgumaParser.PONTO, i);
 		}
-		public List<TerminalNode> ABRECHAVE() { return getTokens(T3AlgumaParserParser.ABRECHAVE); }
+		public List<TerminalNode> ABRECHAVE() { return getTokens(T4AlgumaParser.ABRECHAVE); }
 		public TerminalNode ABRECHAVE(int i) {
-			return getToken(T3AlgumaParserParser.ABRECHAVE, i);
+			return getToken(T4AlgumaParser.ABRECHAVE, i);
 		}
 		public List<Exp_aritmeticaContext> exp_aritmetica() {
 			return getRuleContexts(Exp_aritmeticaContext.class);
@@ -421,14 +453,22 @@ public class T3AlgumaParserParser extends Parser {
 		public Exp_aritmeticaContext exp_aritmetica(int i) {
 			return getRuleContext(Exp_aritmeticaContext.class,i);
 		}
-		public List<TerminalNode> FECHACHAVE() { return getTokens(T3AlgumaParserParser.FECHACHAVE); }
+		public List<TerminalNode> FECHACHAVE() { return getTokens(T4AlgumaParser.FECHACHAVE); }
 		public TerminalNode FECHACHAVE(int i) {
-			return getToken(T3AlgumaParserParser.FECHACHAVE, i);
+			return getToken(T4AlgumaParser.FECHACHAVE, i);
 		}
 		public IdentificadorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_identificador; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterIdentificador(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitIdentificador(this);
+		}
 	}
 
 	public final IdentificadorContext identificador() throws RecognitionException {
@@ -505,6 +545,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_exp_aritmetica; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterExp_aritmetica(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitExp_aritmetica(this);
+		}
 	}
 
 	public final Exp_aritmeticaContext exp_aritmetica() throws RecognitionException {
@@ -565,6 +613,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_termo; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterTermo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitTermo(this);
+		}
 	}
 
 	public final TermoContext termo() throws RecognitionException {
@@ -623,6 +679,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_fator; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterFator(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitFator(this);
+		}
 	}
 
 	public final FatorContext fator() throws RecognitionException {
@@ -665,12 +729,20 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Op1Context extends ParserRuleContext {
-		public TerminalNode SOMA() { return getToken(T3AlgumaParserParser.SOMA, 0); }
-		public TerminalNode SUBTRACAO() { return getToken(T3AlgumaParserParser.SUBTRACAO, 0); }
+		public TerminalNode SOMA() { return getToken(T4AlgumaParser.SOMA, 0); }
+		public TerminalNode SUBTRACAO() { return getToken(T4AlgumaParser.SUBTRACAO, 0); }
 		public Op1Context(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op1; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp1(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp1(this);
+		}
 	}
 
 	public final Op1Context op1() throws RecognitionException {
@@ -705,12 +777,20 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Op2Context extends ParserRuleContext {
-		public TerminalNode MULTIPLICACAO() { return getToken(T3AlgumaParserParser.MULTIPLICACAO, 0); }
-		public TerminalNode DIVISAO() { return getToken(T3AlgumaParserParser.DIVISAO, 0); }
+		public TerminalNode MULTIPLICACAO() { return getToken(T4AlgumaParser.MULTIPLICACAO, 0); }
+		public TerminalNode DIVISAO() { return getToken(T4AlgumaParser.DIVISAO, 0); }
 		public Op2Context(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op2; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp2(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp2(this);
+		}
 	}
 
 	public final Op2Context op2() throws RecognitionException {
@@ -745,11 +825,19 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Op3Context extends ParserRuleContext {
-		public TerminalNode RESTO() { return getToken(T3AlgumaParserParser.RESTO, 0); }
+		public TerminalNode RESTO() { return getToken(T4AlgumaParser.RESTO, 0); }
 		public Op3Context(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op3; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp3(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp3(this);
+		}
 	}
 
 	public final Op3Context op3() throws RecognitionException {
@@ -788,6 +876,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parcela; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParcela(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParcela(this);
+		}
 	}
 
 	public final ParcelaContext parcela() throws RecognitionException {
@@ -848,26 +944,34 @@ public class T3AlgumaParserParser extends Parser {
 		public IdentificadorContext identificador() {
 			return getRuleContext(IdentificadorContext.class,0);
 		}
-		public TerminalNode PONTEIRO() { return getToken(T3AlgumaParserParser.PONTEIRO, 0); }
-		public TerminalNode IDENT() { return getToken(T3AlgumaParserParser.IDENT, 0); }
-		public TerminalNode ABREPAR() { return getToken(T3AlgumaParserParser.ABREPAR, 0); }
+		public TerminalNode PONTEIRO() { return getToken(T4AlgumaParser.PONTEIRO, 0); }
+		public TerminalNode IDENT() { return getToken(T4AlgumaParser.IDENT, 0); }
+		public TerminalNode ABREPAR() { return getToken(T4AlgumaParser.ABREPAR, 0); }
 		public List<ExpressaoContext> expressao() {
 			return getRuleContexts(ExpressaoContext.class);
 		}
 		public ExpressaoContext expressao(int i) {
 			return getRuleContext(ExpressaoContext.class,i);
 		}
-		public TerminalNode FECHAPAR() { return getToken(T3AlgumaParserParser.FECHAPAR, 0); }
-		public List<TerminalNode> VIRGULA() { return getTokens(T3AlgumaParserParser.VIRGULA); }
+		public TerminalNode FECHAPAR() { return getToken(T4AlgumaParser.FECHAPAR, 0); }
+		public List<TerminalNode> VIRGULA() { return getTokens(T4AlgumaParser.VIRGULA); }
 		public TerminalNode VIRGULA(int i) {
-			return getToken(T3AlgumaParserParser.VIRGULA, i);
+			return getToken(T4AlgumaParser.VIRGULA, i);
 		}
-		public TerminalNode NUM_INT() { return getToken(T3AlgumaParserParser.NUM_INT, 0); }
-		public TerminalNode NUM_REAL() { return getToken(T3AlgumaParserParser.NUM_REAL, 0); }
+		public TerminalNode NUM_INT() { return getToken(T4AlgumaParser.NUM_INT, 0); }
+		public TerminalNode NUM_REAL() { return getToken(T4AlgumaParser.NUM_REAL, 0); }
 		public Parcela_unarioContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parcela_unario; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParcela_unario(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParcela_unario(this);
+		}
 	}
 
 	public final Parcela_unarioContext parcela_unario() throws RecognitionException {
@@ -964,11 +1068,19 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Op_unarioContext extends ParserRuleContext {
-		public TerminalNode SUBTRACAO() { return getToken(T3AlgumaParserParser.SUBTRACAO, 0); }
+		public TerminalNode SUBTRACAO() { return getToken(T4AlgumaParser.SUBTRACAO, 0); }
 		public Op_unarioContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op_unario; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp_unario(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp_unario(this);
+		}
 	}
 
 	public final Op_unarioContext op_unario() throws RecognitionException {
@@ -994,15 +1106,23 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Parcela_nao_unarioContext extends ParserRuleContext {
-		public TerminalNode ENDERECO() { return getToken(T3AlgumaParserParser.ENDERECO, 0); }
+		public TerminalNode ENDERECO() { return getToken(T4AlgumaParser.ENDERECO, 0); }
 		public IdentificadorContext identificador() {
 			return getRuleContext(IdentificadorContext.class,0);
 		}
-		public TerminalNode CADEIA() { return getToken(T3AlgumaParserParser.CADEIA, 0); }
+		public TerminalNode CADEIA() { return getToken(T4AlgumaParser.CADEIA, 0); }
 		public Parcela_nao_unarioContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parcela_nao_unario; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParcela_nao_unario(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParcela_nao_unario(this);
+		}
 	}
 
 	public final Parcela_nao_unarioContext parcela_nao_unario() throws RecognitionException {
@@ -1055,6 +1175,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_tipo; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterTipo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitTipo(this);
+		}
 	}
 
 	public final TipoContext tipo() throws RecognitionException {
@@ -1100,14 +1228,22 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Tipo_basicoContext extends ParserRuleContext {
-		public TerminalNode LITERAL() { return getToken(T3AlgumaParserParser.LITERAL, 0); }
-		public TerminalNode INTEIRO() { return getToken(T3AlgumaParserParser.INTEIRO, 0); }
-		public TerminalNode REAL() { return getToken(T3AlgumaParserParser.REAL, 0); }
-		public TerminalNode LOGICO() { return getToken(T3AlgumaParserParser.LOGICO, 0); }
+		public TerminalNode LITERAL() { return getToken(T4AlgumaParser.LITERAL, 0); }
+		public TerminalNode INTEIRO() { return getToken(T4AlgumaParser.INTEIRO, 0); }
+		public TerminalNode REAL() { return getToken(T4AlgumaParser.REAL, 0); }
+		public TerminalNode LOGICO() { return getToken(T4AlgumaParser.LOGICO, 0); }
 		public Tipo_basicoContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_tipo_basico; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterTipo_basico(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitTipo_basico(this);
+		}
 	}
 
 	public final Tipo_basicoContext tipo_basico() throws RecognitionException {
@@ -1145,12 +1281,20 @@ public class T3AlgumaParserParser extends Parser {
 		public Tipo_basicoContext tipo_basico() {
 			return getRuleContext(Tipo_basicoContext.class,0);
 		}
-		public TerminalNode IDENT() { return getToken(T3AlgumaParserParser.IDENT, 0); }
-		public TerminalNode PONTEIRO() { return getToken(T3AlgumaParserParser.PONTEIRO, 0); }
+		public TerminalNode IDENT() { return getToken(T4AlgumaParser.IDENT, 0); }
+		public TerminalNode PONTEIRO() { return getToken(T4AlgumaParser.PONTEIRO, 0); }
 		public Tipo_variavelContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_tipo_variavel; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterTipo_variavel(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitTipo_variavel(this);
+		}
 	}
 
 	public final Tipo_variavelContext tipo_variavel() throws RecognitionException {
@@ -1206,15 +1350,23 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Valor_constanteContext extends ParserRuleContext {
-		public TerminalNode CADEIA() { return getToken(T3AlgumaParserParser.CADEIA, 0); }
-		public TerminalNode NUM_INT() { return getToken(T3AlgumaParserParser.NUM_INT, 0); }
-		public TerminalNode NUM_REAL() { return getToken(T3AlgumaParserParser.NUM_REAL, 0); }
-		public TerminalNode VERDADEIRO() { return getToken(T3AlgumaParserParser.VERDADEIRO, 0); }
-		public TerminalNode FALSO() { return getToken(T3AlgumaParserParser.FALSO, 0); }
+		public TerminalNode CADEIA() { return getToken(T4AlgumaParser.CADEIA, 0); }
+		public TerminalNode NUM_INT() { return getToken(T4AlgumaParser.NUM_INT, 0); }
+		public TerminalNode NUM_REAL() { return getToken(T4AlgumaParser.NUM_REAL, 0); }
+		public TerminalNode VERDADEIRO() { return getToken(T4AlgumaParser.VERDADEIRO, 0); }
+		public TerminalNode FALSO() { return getToken(T4AlgumaParser.FALSO, 0); }
 		public Valor_constanteContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_valor_constante; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterValor_constante(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitValor_constante(this);
+		}
 	}
 
 	public final Valor_constanteContext valor_constante() throws RecognitionException {
@@ -1249,8 +1401,8 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class RegistroContext extends ParserRuleContext {
-		public TerminalNode REGISTRO() { return getToken(T3AlgumaParserParser.REGISTRO, 0); }
-		public TerminalNode FIM_REGISTRO() { return getToken(T3AlgumaParserParser.FIM_REGISTRO, 0); }
+		public TerminalNode REGISTRO() { return getToken(T4AlgumaParser.REGISTRO, 0); }
+		public TerminalNode FIM_REGISTRO() { return getToken(T4AlgumaParser.FIM_REGISTRO, 0); }
 		public List<VariavelContext> variavel() {
 			return getRuleContexts(VariavelContext.class);
 		}
@@ -1261,6 +1413,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_registro; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterRegistro(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitRegistro(this);
+		}
 	}
 
 	public final RegistroContext registro() throws RecognitionException {
@@ -1309,19 +1469,27 @@ public class T3AlgumaParserParser extends Parser {
 		public IdentificadorContext identificador(int i) {
 			return getRuleContext(IdentificadorContext.class,i);
 		}
-		public TerminalNode DOISPONTOS() { return getToken(T3AlgumaParserParser.DOISPONTOS, 0); }
+		public TerminalNode DOISPONTOS() { return getToken(T4AlgumaParser.DOISPONTOS, 0); }
 		public Tipo_variavelContext tipo_variavel() {
 			return getRuleContext(Tipo_variavelContext.class,0);
 		}
-		public TerminalNode VAR() { return getToken(T3AlgumaParserParser.VAR, 0); }
-		public List<TerminalNode> VIRGULA() { return getTokens(T3AlgumaParserParser.VIRGULA); }
+		public TerminalNode VAR() { return getToken(T4AlgumaParser.VAR, 0); }
+		public List<TerminalNode> VIRGULA() { return getTokens(T4AlgumaParser.VIRGULA); }
 		public TerminalNode VIRGULA(int i) {
-			return getToken(T3AlgumaParserParser.VIRGULA, i);
+			return getToken(T4AlgumaParser.VIRGULA, i);
 		}
 		public ParametroContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parametro; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParametro(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParametro(this);
+		}
 	}
 
 	public final ParametroContext parametro() throws RecognitionException {
@@ -1384,14 +1552,22 @@ public class T3AlgumaParserParser extends Parser {
 		public ParametroContext parametro(int i) {
 			return getRuleContext(ParametroContext.class,i);
 		}
-		public List<TerminalNode> VIRGULA() { return getTokens(T3AlgumaParserParser.VIRGULA); }
+		public List<TerminalNode> VIRGULA() { return getTokens(T4AlgumaParser.VIRGULA); }
 		public TerminalNode VIRGULA(int i) {
-			return getToken(T3AlgumaParserParser.VIRGULA, i);
+			return getToken(T4AlgumaParser.VIRGULA, i);
 		}
 		public ParametrosContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parametros; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParametros(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParametros(this);
+		}
 	}
 
 	public final ParametrosContext parametros() throws RecognitionException {
@@ -1434,11 +1610,11 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Declaracoes_funcoesContext extends ParserRuleContext {
-		public TerminalNode PROCEDIMENTO() { return getToken(T3AlgumaParserParser.PROCEDIMENTO, 0); }
-		public TerminalNode IDENT() { return getToken(T3AlgumaParserParser.IDENT, 0); }
-		public TerminalNode ABREPAR() { return getToken(T3AlgumaParserParser.ABREPAR, 0); }
-		public TerminalNode FECHAPAR() { return getToken(T3AlgumaParserParser.FECHAPAR, 0); }
-		public TerminalNode FIM_PROCEDIMENTO() { return getToken(T3AlgumaParserParser.FIM_PROCEDIMENTO, 0); }
+		public TerminalNode PROCEDIMENTO() { return getToken(T4AlgumaParser.PROCEDIMENTO, 0); }
+		public TerminalNode IDENT() { return getToken(T4AlgumaParser.IDENT, 0); }
+		public TerminalNode ABREPAR() { return getToken(T4AlgumaParser.ABREPAR, 0); }
+		public TerminalNode FECHAPAR() { return getToken(T4AlgumaParser.FECHAPAR, 0); }
+		public TerminalNode FIM_PROCEDIMENTO() { return getToken(T4AlgumaParser.FIM_PROCEDIMENTO, 0); }
 		public ParametrosContext parametros() {
 			return getRuleContext(ParametrosContext.class,0);
 		}
@@ -1454,16 +1630,24 @@ public class T3AlgumaParserParser extends Parser {
 		public CmdContext cmd(int i) {
 			return getRuleContext(CmdContext.class,i);
 		}
-		public TerminalNode FUNCAO() { return getToken(T3AlgumaParserParser.FUNCAO, 0); }
-		public TerminalNode DOISPONTOS() { return getToken(T3AlgumaParserParser.DOISPONTOS, 0); }
+		public TerminalNode FUNCAO() { return getToken(T4AlgumaParser.FUNCAO, 0); }
+		public TerminalNode DOISPONTOS() { return getToken(T4AlgumaParser.DOISPONTOS, 0); }
 		public Tipo_variavelContext tipo_variavel() {
 			return getRuleContext(Tipo_variavelContext.class,0);
 		}
-		public TerminalNode FIM_FUNCAO() { return getToken(T3AlgumaParserParser.FIM_FUNCAO, 0); }
+		public TerminalNode FIM_FUNCAO() { return getToken(T4AlgumaParser.FIM_FUNCAO, 0); }
 		public Declaracoes_funcoesContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declaracoes_funcoes; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterDeclaracoes_funcoes(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitDeclaracoes_funcoes(this);
+		}
 	}
 
 	public final Declaracoes_funcoesContext declaracoes_funcoes() throws RecognitionException {
@@ -1617,6 +1801,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_corpo; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCorpo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCorpo(this);
+		}
 	}
 
 	public final CorpoContext corpo() throws RecognitionException {
@@ -1703,6 +1895,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmd(this);
+		}
 	}
 
 	public final CmdContext cmd() throws RecognitionException {
@@ -1797,27 +1997,35 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CmdLeiaContext extends ParserRuleContext {
-		public TerminalNode LEIA() { return getToken(T3AlgumaParserParser.LEIA, 0); }
-		public TerminalNode ABREPAR() { return getToken(T3AlgumaParserParser.ABREPAR, 0); }
+		public TerminalNode LEIA() { return getToken(T4AlgumaParser.LEIA, 0); }
+		public TerminalNode ABREPAR() { return getToken(T4AlgumaParser.ABREPAR, 0); }
 		public List<IdentificadorContext> identificador() {
 			return getRuleContexts(IdentificadorContext.class);
 		}
 		public IdentificadorContext identificador(int i) {
 			return getRuleContext(IdentificadorContext.class,i);
 		}
-		public TerminalNode FECHAPAR() { return getToken(T3AlgumaParserParser.FECHAPAR, 0); }
-		public List<TerminalNode> PONTEIRO() { return getTokens(T3AlgumaParserParser.PONTEIRO); }
+		public TerminalNode FECHAPAR() { return getToken(T4AlgumaParser.FECHAPAR, 0); }
+		public List<TerminalNode> PONTEIRO() { return getTokens(T4AlgumaParser.PONTEIRO); }
 		public TerminalNode PONTEIRO(int i) {
-			return getToken(T3AlgumaParserParser.PONTEIRO, i);
+			return getToken(T4AlgumaParser.PONTEIRO, i);
 		}
-		public List<TerminalNode> VIRGULA() { return getTokens(T3AlgumaParserParser.VIRGULA); }
+		public List<TerminalNode> VIRGULA() { return getTokens(T4AlgumaParser.VIRGULA); }
 		public TerminalNode VIRGULA(int i) {
-			return getToken(T3AlgumaParserParser.VIRGULA, i);
+			return getToken(T4AlgumaParser.VIRGULA, i);
 		}
 		public CmdLeiaContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdLeia; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdLeia(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdLeia(this);
+		}
 	}
 
 	public final CmdLeiaContext cmdLeia() throws RecognitionException {
@@ -1886,23 +2094,31 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CmdEscrevaContext extends ParserRuleContext {
-		public TerminalNode ESCREVA() { return getToken(T3AlgumaParserParser.ESCREVA, 0); }
-		public TerminalNode ABREPAR() { return getToken(T3AlgumaParserParser.ABREPAR, 0); }
+		public TerminalNode ESCREVA() { return getToken(T4AlgumaParser.ESCREVA, 0); }
+		public TerminalNode ABREPAR() { return getToken(T4AlgumaParser.ABREPAR, 0); }
 		public List<ExpressaoContext> expressao() {
 			return getRuleContexts(ExpressaoContext.class);
 		}
 		public ExpressaoContext expressao(int i) {
 			return getRuleContext(ExpressaoContext.class,i);
 		}
-		public TerminalNode FECHAPAR() { return getToken(T3AlgumaParserParser.FECHAPAR, 0); }
-		public List<TerminalNode> VIRGULA() { return getTokens(T3AlgumaParserParser.VIRGULA); }
+		public TerminalNode FECHAPAR() { return getToken(T4AlgumaParser.FECHAPAR, 0); }
+		public List<TerminalNode> VIRGULA() { return getTokens(T4AlgumaParser.VIRGULA); }
 		public TerminalNode VIRGULA(int i) {
-			return getToken(T3AlgumaParserParser.VIRGULA, i);
+			return getToken(T4AlgumaParser.VIRGULA, i);
 		}
 		public CmdEscrevaContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdEscreva; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdEscreva(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdEscreva(this);
+		}
 	}
 
 	public final CmdEscrevaContext cmdEscreva() throws RecognitionException {
@@ -1951,23 +2167,34 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CmdSeContext extends ParserRuleContext {
-		public TerminalNode SE() { return getToken(T3AlgumaParserParser.SE, 0); }
+		public CmdContext cmd;
+		public List<CmdContext> seCmds = new ArrayList<CmdContext>();
+		public List<CmdContext> senaoCmds = new ArrayList<CmdContext>();
+		public TerminalNode SE() { return getToken(T4AlgumaParser.SE, 0); }
 		public ExpressaoContext expressao() {
 			return getRuleContext(ExpressaoContext.class,0);
 		}
-		public TerminalNode ENTAO() { return getToken(T3AlgumaParserParser.ENTAO, 0); }
-		public TerminalNode FIM_SE() { return getToken(T3AlgumaParserParser.FIM_SE, 0); }
+		public TerminalNode ENTAO() { return getToken(T4AlgumaParser.ENTAO, 0); }
+		public TerminalNode FIM_SE() { return getToken(T4AlgumaParser.FIM_SE, 0); }
+		public TerminalNode SENAO() { return getToken(T4AlgumaParser.SENAO, 0); }
 		public List<CmdContext> cmd() {
 			return getRuleContexts(CmdContext.class);
 		}
 		public CmdContext cmd(int i) {
 			return getRuleContext(CmdContext.class,i);
 		}
-		public TerminalNode SENAO() { return getToken(T3AlgumaParserParser.SENAO, 0); }
 		public CmdSeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdSe; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdSe(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdSe(this);
+		}
 	}
 
 	public final CmdSeContext cmdSe() throws RecognitionException {
@@ -1990,7 +2217,8 @@ public class T3AlgumaParserParser extends Parser {
 				{
 				{
 				setState(368);
-				cmd();
+				((CmdSeContext)_localctx).cmd = cmd();
+				((CmdSeContext)_localctx).seCmds.add(((CmdSeContext)_localctx).cmd);
 				}
 				}
 				setState(373);
@@ -2011,7 +2239,8 @@ public class T3AlgumaParserParser extends Parser {
 					{
 					{
 					setState(375);
-					cmd();
+					((CmdSeContext)_localctx).cmd = cmd();
+					((CmdSeContext)_localctx).senaoCmds.add(((CmdSeContext)_localctx).cmd);
 					}
 					}
 					setState(380);
@@ -2038,16 +2267,16 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CmdCasoContext extends ParserRuleContext {
-		public TerminalNode CASO() { return getToken(T3AlgumaParserParser.CASO, 0); }
+		public TerminalNode CASO() { return getToken(T4AlgumaParser.CASO, 0); }
 		public Exp_aritmeticaContext exp_aritmetica() {
 			return getRuleContext(Exp_aritmeticaContext.class,0);
 		}
-		public TerminalNode SEJA() { return getToken(T3AlgumaParserParser.SEJA, 0); }
+		public TerminalNode SEJA() { return getToken(T4AlgumaParser.SEJA, 0); }
 		public SelecaoContext selecao() {
 			return getRuleContext(SelecaoContext.class,0);
 		}
-		public TerminalNode FIM_CASO() { return getToken(T3AlgumaParserParser.FIM_CASO, 0); }
-		public TerminalNode SENAO() { return getToken(T3AlgumaParserParser.SENAO, 0); }
+		public TerminalNode FIM_CASO() { return getToken(T4AlgumaParser.FIM_CASO, 0); }
+		public TerminalNode SENAO() { return getToken(T4AlgumaParser.SENAO, 0); }
 		public List<CmdContext> cmd() {
 			return getRuleContexts(CmdContext.class);
 		}
@@ -2058,6 +2287,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdCaso; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdCaso(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdCaso(this);
+		}
 	}
 
 	public final CmdCasoContext cmdCaso() throws RecognitionException {
@@ -2116,18 +2353,20 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CmdParaContext extends ParserRuleContext {
-		public TerminalNode PARA() { return getToken(T3AlgumaParserParser.PARA, 0); }
-		public TerminalNode IDENT() { return getToken(T3AlgumaParserParser.IDENT, 0); }
-		public TerminalNode ATRIBUICAO() { return getToken(T3AlgumaParserParser.ATRIBUICAO, 0); }
+		public Exp_aritmeticaContext exp1;
+		public Exp_aritmeticaContext exp2;
+		public TerminalNode PARA() { return getToken(T4AlgumaParser.PARA, 0); }
+		public TerminalNode IDENT() { return getToken(T4AlgumaParser.IDENT, 0); }
+		public TerminalNode ATRIBUICAO() { return getToken(T4AlgumaParser.ATRIBUICAO, 0); }
+		public TerminalNode ATE() { return getToken(T4AlgumaParser.ATE, 0); }
+		public TerminalNode FACA() { return getToken(T4AlgumaParser.FACA, 0); }
+		public TerminalNode FIM_PARA() { return getToken(T4AlgumaParser.FIM_PARA, 0); }
 		public List<Exp_aritmeticaContext> exp_aritmetica() {
 			return getRuleContexts(Exp_aritmeticaContext.class);
 		}
 		public Exp_aritmeticaContext exp_aritmetica(int i) {
 			return getRuleContext(Exp_aritmeticaContext.class,i);
 		}
-		public TerminalNode ATE() { return getToken(T3AlgumaParserParser.ATE, 0); }
-		public TerminalNode FACA() { return getToken(T3AlgumaParserParser.FACA, 0); }
-		public TerminalNode FIM_PARA() { return getToken(T3AlgumaParserParser.FIM_PARA, 0); }
 		public List<CmdContext> cmd() {
 			return getRuleContexts(CmdContext.class);
 		}
@@ -2138,6 +2377,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdPara; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdPara(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdPara(this);
+		}
 	}
 
 	public final CmdParaContext cmdPara() throws RecognitionException {
@@ -2154,11 +2401,11 @@ public class T3AlgumaParserParser extends Parser {
 			setState(402);
 			match(ATRIBUICAO);
 			setState(403);
-			exp_aritmetica();
+			((CmdParaContext)_localctx).exp1 = exp_aritmetica();
 			setState(404);
 			match(ATE);
 			setState(405);
-			exp_aritmetica();
+			((CmdParaContext)_localctx).exp2 = exp_aritmetica();
 			setState(406);
 			match(FACA);
 			setState(410);
@@ -2192,12 +2439,12 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CmdEnquantoContext extends ParserRuleContext {
-		public TerminalNode ENQUANTO() { return getToken(T3AlgumaParserParser.ENQUANTO, 0); }
+		public TerminalNode ENQUANTO() { return getToken(T4AlgumaParser.ENQUANTO, 0); }
 		public ExpressaoContext expressao() {
 			return getRuleContext(ExpressaoContext.class,0);
 		}
-		public TerminalNode FACA() { return getToken(T3AlgumaParserParser.FACA, 0); }
-		public TerminalNode FIM_ENQUANTO() { return getToken(T3AlgumaParserParser.FIM_ENQUANTO, 0); }
+		public TerminalNode FACA() { return getToken(T4AlgumaParser.FACA, 0); }
+		public TerminalNode FIM_ENQUANTO() { return getToken(T4AlgumaParser.FIM_ENQUANTO, 0); }
 		public List<CmdContext> cmd() {
 			return getRuleContexts(CmdContext.class);
 		}
@@ -2208,6 +2455,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdEnquanto; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdEnquanto(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdEnquanto(this);
+		}
 	}
 
 	public final CmdEnquantoContext cmdEnquanto() throws RecognitionException {
@@ -2254,8 +2509,8 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CmdFacaContext extends ParserRuleContext {
-		public TerminalNode FACA() { return getToken(T3AlgumaParserParser.FACA, 0); }
-		public TerminalNode ATE() { return getToken(T3AlgumaParserParser.ATE, 0); }
+		public TerminalNode FACA() { return getToken(T4AlgumaParser.FACA, 0); }
+		public TerminalNode ATE() { return getToken(T4AlgumaParser.ATE, 0); }
 		public ExpressaoContext expressao() {
 			return getRuleContext(ExpressaoContext.class,0);
 		}
@@ -2269,6 +2524,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdFaca; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdFaca(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdFaca(this);
+		}
 	}
 
 	public final CmdFacaContext cmdFaca() throws RecognitionException {
@@ -2316,15 +2579,23 @@ public class T3AlgumaParserParser extends Parser {
 		public IdentificadorContext identificador() {
 			return getRuleContext(IdentificadorContext.class,0);
 		}
-		public TerminalNode ATRIBUICAO() { return getToken(T3AlgumaParserParser.ATRIBUICAO, 0); }
+		public TerminalNode ATRIBUICAO() { return getToken(T4AlgumaParser.ATRIBUICAO, 0); }
 		public ExpressaoContext expressao() {
 			return getRuleContext(ExpressaoContext.class,0);
 		}
-		public TerminalNode PONTEIRO() { return getToken(T3AlgumaParserParser.PONTEIRO, 0); }
+		public TerminalNode PONTEIRO() { return getToken(T4AlgumaParser.PONTEIRO, 0); }
 		public CmdAtribuicaoContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdAtribuicao; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdAtribuicao(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdAtribuicao(this);
+		}
 	}
 
 	public final CmdAtribuicaoContext cmdAtribuicao() throws RecognitionException {
@@ -2365,23 +2636,31 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CmdChamadaContext extends ParserRuleContext {
-		public TerminalNode IDENT() { return getToken(T3AlgumaParserParser.IDENT, 0); }
-		public TerminalNode ABREPAR() { return getToken(T3AlgumaParserParser.ABREPAR, 0); }
+		public TerminalNode IDENT() { return getToken(T4AlgumaParser.IDENT, 0); }
+		public TerminalNode ABREPAR() { return getToken(T4AlgumaParser.ABREPAR, 0); }
 		public List<ExpressaoContext> expressao() {
 			return getRuleContexts(ExpressaoContext.class);
 		}
 		public ExpressaoContext expressao(int i) {
 			return getRuleContext(ExpressaoContext.class,i);
 		}
-		public TerminalNode FECHAPAR() { return getToken(T3AlgumaParserParser.FECHAPAR, 0); }
-		public List<TerminalNode> VIRGULA() { return getTokens(T3AlgumaParserParser.VIRGULA); }
+		public TerminalNode FECHAPAR() { return getToken(T4AlgumaParser.FECHAPAR, 0); }
+		public List<TerminalNode> VIRGULA() { return getTokens(T4AlgumaParser.VIRGULA); }
 		public TerminalNode VIRGULA(int i) {
-			return getToken(T3AlgumaParserParser.VIRGULA, i);
+			return getToken(T4AlgumaParser.VIRGULA, i);
 		}
 		public CmdChamadaContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdChamada; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdChamada(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdChamada(this);
+		}
 	}
 
 	public final CmdChamadaContext cmdChamada() throws RecognitionException {
@@ -2430,7 +2709,7 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CmdRetorneContext extends ParserRuleContext {
-		public TerminalNode RETORNE() { return getToken(T3AlgumaParserParser.RETORNE, 0); }
+		public TerminalNode RETORNE() { return getToken(T4AlgumaParser.RETORNE, 0); }
 		public ExpressaoContext expressao() {
 			return getRuleContext(ExpressaoContext.class,0);
 		}
@@ -2438,6 +2717,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_cmdRetorne; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterCmdRetorne(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitCmdRetorne(this);
+		}
 	}
 
 	public final CmdRetorneContext cmdRetorne() throws RecognitionException {
@@ -2475,6 +2762,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_selecao; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterSelecao(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitSelecao(this);
+		}
 	}
 
 	public final SelecaoContext selecao() throws RecognitionException {
@@ -2516,7 +2811,7 @@ public class T3AlgumaParserParser extends Parser {
 		public ConstantesContext constantes() {
 			return getRuleContext(ConstantesContext.class,0);
 		}
-		public TerminalNode DOISPONTOS() { return getToken(T3AlgumaParserParser.DOISPONTOS, 0); }
+		public TerminalNode DOISPONTOS() { return getToken(T4AlgumaParser.DOISPONTOS, 0); }
 		public List<CmdContext> cmd() {
 			return getRuleContexts(CmdContext.class);
 		}
@@ -2527,6 +2822,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_item_selecao; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterItem_selecao(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitItem_selecao(this);
+		}
 	}
 
 	public final Item_selecaoContext item_selecao() throws RecognitionException {
@@ -2575,14 +2878,22 @@ public class T3AlgumaParserParser extends Parser {
 		public Numero_intervaloContext numero_intervalo(int i) {
 			return getRuleContext(Numero_intervaloContext.class,i);
 		}
-		public List<TerminalNode> VIRGULA() { return getTokens(T3AlgumaParserParser.VIRGULA); }
+		public List<TerminalNode> VIRGULA() { return getTokens(T4AlgumaParser.VIRGULA); }
 		public TerminalNode VIRGULA(int i) {
-			return getToken(T3AlgumaParserParser.VIRGULA, i);
+			return getToken(T4AlgumaParser.VIRGULA, i);
 		}
 		public ConstantesContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_constantes; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterConstantes(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitConstantes(this);
+		}
 	}
 
 	public final ConstantesContext constantes() throws RecognitionException {
@@ -2625,9 +2936,9 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Numero_intervaloContext extends ParserRuleContext {
-		public List<TerminalNode> NUM_INT() { return getTokens(T3AlgumaParserParser.NUM_INT); }
+		public List<TerminalNode> NUM_INT() { return getTokens(T4AlgumaParser.NUM_INT); }
 		public TerminalNode NUM_INT(int i) {
-			return getToken(T3AlgumaParserParser.NUM_INT, i);
+			return getToken(T4AlgumaParser.NUM_INT, i);
 		}
 		public List<Op_unarioContext> op_unario() {
 			return getRuleContexts(Op_unarioContext.class);
@@ -2635,11 +2946,19 @@ public class T3AlgumaParserParser extends Parser {
 		public Op_unarioContext op_unario(int i) {
 			return getRuleContext(Op_unarioContext.class,i);
 		}
-		public TerminalNode INTERVALO() { return getToken(T3AlgumaParserParser.INTERVALO, 0); }
+		public TerminalNode INTERVALO() { return getToken(T4AlgumaParser.INTERVALO, 0); }
 		public Numero_intervaloContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_numero_intervalo; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterNumero_intervalo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitNumero_intervalo(this);
+		}
 	}
 
 	public final Numero_intervaloContext numero_intervalo() throws RecognitionException {
@@ -2711,6 +3030,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_exp_relacional; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterExp_relacional(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitExp_relacional(this);
+		}
 	}
 
 	public final Exp_relacionalContext exp_relacional() throws RecognitionException {
@@ -2749,16 +3076,24 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Op_relacionalContext extends ParserRuleContext {
-		public TerminalNode IGUAL() { return getToken(T3AlgumaParserParser.IGUAL, 0); }
-		public TerminalNode DIFERENTE() { return getToken(T3AlgumaParserParser.DIFERENTE, 0); }
-		public TerminalNode MAIORIGUAL() { return getToken(T3AlgumaParserParser.MAIORIGUAL, 0); }
-		public TerminalNode MENORIGUAL() { return getToken(T3AlgumaParserParser.MENORIGUAL, 0); }
-		public TerminalNode MAIOR() { return getToken(T3AlgumaParserParser.MAIOR, 0); }
-		public TerminalNode MENOR() { return getToken(T3AlgumaParserParser.MENOR, 0); }
+		public TerminalNode IGUAL() { return getToken(T4AlgumaParser.IGUAL, 0); }
+		public TerminalNode DIFERENTE() { return getToken(T4AlgumaParser.DIFERENTE, 0); }
+		public TerminalNode MAIORIGUAL() { return getToken(T4AlgumaParser.MAIORIGUAL, 0); }
+		public TerminalNode MENORIGUAL() { return getToken(T4AlgumaParser.MENORIGUAL, 0); }
+		public TerminalNode MAIOR() { return getToken(T4AlgumaParser.MAIOR, 0); }
+		public TerminalNode MENOR() { return getToken(T4AlgumaParser.MENOR, 0); }
 		public Op_relacionalContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op_relacional; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp_relacional(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp_relacional(this);
+		}
 	}
 
 	public final Op_relacionalContext op_relacional() throws RecognitionException {
@@ -2809,6 +3144,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expressao; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterExpressao(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitExpressao(this);
+		}
 	}
 
 	public final ExpressaoContext expressao() throws RecognitionException {
@@ -2867,6 +3210,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_termo_logico; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterTermo_logico(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitTermo_logico(this);
+		}
 	}
 
 	public final Termo_logicoContext termo_logico() throws RecognitionException {
@@ -2912,11 +3263,19 @@ public class T3AlgumaParserParser extends Parser {
 		public Parcela_logicaContext parcela_logica() {
 			return getRuleContext(Parcela_logicaContext.class,0);
 		}
-		public TerminalNode NAO() { return getToken(T3AlgumaParserParser.NAO, 0); }
+		public TerminalNode NAO() { return getToken(T4AlgumaParser.NAO, 0); }
 		public Fator_logicoContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_fator_logico; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterFator_logico(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitFator_logico(this);
+		}
 	}
 
 	public final Fator_logicoContext fator_logico() throws RecognitionException {
@@ -2953,8 +3312,8 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Parcela_logicaContext extends ParserRuleContext {
-		public TerminalNode VERDADEIRO() { return getToken(T3AlgumaParserParser.VERDADEIRO, 0); }
-		public TerminalNode FALSO() { return getToken(T3AlgumaParserParser.FALSO, 0); }
+		public TerminalNode VERDADEIRO() { return getToken(T4AlgumaParser.VERDADEIRO, 0); }
+		public TerminalNode FALSO() { return getToken(T4AlgumaParser.FALSO, 0); }
 		public Exp_relacionalContext exp_relacional() {
 			return getRuleContext(Exp_relacionalContext.class,0);
 		}
@@ -2962,6 +3321,14 @@ public class T3AlgumaParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parcela_logica; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterParcela_logica(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitParcela_logica(this);
+		}
 	}
 
 	public final Parcela_logicaContext parcela_logica() throws RecognitionException {
@@ -3019,11 +3386,19 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Op_logico_1Context extends ParserRuleContext {
-		public TerminalNode OU() { return getToken(T3AlgumaParserParser.OU, 0); }
+		public TerminalNode OU() { return getToken(T4AlgumaParser.OU, 0); }
 		public Op_logico_1Context(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op_logico_1; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp_logico_1(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp_logico_1(this);
+		}
 	}
 
 	public final Op_logico_1Context op_logico_1() throws RecognitionException {
@@ -3049,11 +3424,19 @@ public class T3AlgumaParserParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Op_logico_2Context extends ParserRuleContext {
-		public TerminalNode E() { return getToken(T3AlgumaParserParser.E, 0); }
+		public TerminalNode E() { return getToken(T4AlgumaParser.E, 0); }
 		public Op_logico_2Context(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_op_logico_2; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).enterOp_logico_2(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof T4AlgumaListener ) ((T4AlgumaListener)listener).exitOp_logico_2(this);
+		}
 	}
 
 	public final Op_logico_2Context op_logico_2() throws RecognitionException {

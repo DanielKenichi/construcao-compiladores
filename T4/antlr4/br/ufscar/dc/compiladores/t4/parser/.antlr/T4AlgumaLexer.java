@@ -1,4 +1,4 @@
-// Generated from /home/rodrigo/UFSCAR/Compiladores/construcao-compiladores/T2/antlr4/br/ufscar/dc/compiladores/t2/lexico/T2AlgumaLexer.g4 by ANTLR 4.13.1
+// Generated from /home/lucky/UFSCAR/Compiladores/construcao-compiladores/T4/antlr4/br/ufscar/dc/compiladores/t4/parser/T4Alguma.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
-public class T2AlgumaLexer extends Lexer {
+public class T4AlgumaLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.13.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -17,7 +17,7 @@ public class T2AlgumaLexer extends Lexer {
 		new PredictionContextCache();
 	public static final int
 		COMENTARIO=1, ALGORITMO=2, DECLARE=3, VAR=4, CONSTANTE=5, LITERAL=6, INTEIRO=7, 
-		REAL=8, LOGICO=9, VERDADEIRO=10, FALSO=11, E=12, OR=13, NAO=14, SE=15, 
+		REAL=8, LOGICO=9, VERDADEIRO=10, FALSO=11, E=12, OU=13, NAO=14, SE=15, 
 		FIM_SE=16, ENTAO=17, SENAO=18, CASO=19, SEJA=20, FIM_CASO=21, PARA=22, 
 		FIM_PARA=23, ATE=24, FACA=25, ENQUANTO=26, FIM_ENQUANTO=27, TIPO=28, REGISTRO=29, 
 		FIM_REGISTRO=30, PROCEDIMENTO=31, FIM_PROCEDIMENTO=32, FUNCAO=33, FIM_FUNCAO=34, 
@@ -38,7 +38,7 @@ public class T2AlgumaLexer extends Lexer {
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"COMENTARIO", "ALGORITMO", "DECLARE", "VAR", "CONSTANTE", "LITERAL", 
-			"INTEIRO", "REAL", "LOGICO", "VERDADEIRO", "FALSO", "E", "OR", "NAO", 
+			"INTEIRO", "REAL", "LOGICO", "VERDADEIRO", "FALSO", "E", "OU", "NAO", 
 			"SE", "FIM_SE", "ENTAO", "SENAO", "CASO", "SEJA", "FIM_CASO", "PARA", 
 			"FIM_PARA", "ATE", "FACA", "ENQUANTO", "FIM_ENQUANTO", "TIPO", "REGISTRO", 
 			"FIM_REGISTRO", "PROCEDIMENTO", "FIM_PROCEDIMENTO", "FUNCAO", "FIM_FUNCAO", 
@@ -69,7 +69,7 @@ public class T2AlgumaLexer extends Lexer {
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, "COMENTARIO", "ALGORITMO", "DECLARE", "VAR", "CONSTANTE", "LITERAL", 
-			"INTEIRO", "REAL", "LOGICO", "VERDADEIRO", "FALSO", "E", "OR", "NAO", 
+			"INTEIRO", "REAL", "LOGICO", "VERDADEIRO", "FALSO", "E", "OU", "NAO", 
 			"SE", "FIM_SE", "ENTAO", "SENAO", "CASO", "SEJA", "FIM_CASO", "PARA", 
 			"FIM_PARA", "ATE", "FACA", "ENQUANTO", "FIM_ENQUANTO", "TIPO", "REGISTRO", 
 			"FIM_REGISTRO", "PROCEDIMENTO", "FIM_PROCEDIMENTO", "FUNCAO", "FIM_FUNCAO", 
@@ -116,13 +116,13 @@ public class T2AlgumaLexer extends Lexer {
 	}
 
 
-	public T2AlgumaLexer(CharStream input) {
+	public T4AlgumaLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "T2AlgumaLexer.g4"; }
+	public String getGrammarFileName() { return "T4Alguma.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
