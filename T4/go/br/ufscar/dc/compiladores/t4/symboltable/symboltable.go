@@ -1,7 +1,5 @@
 package symboltable
 
-import "log"
-
 type Type int32
 
 const (
@@ -9,8 +7,8 @@ const (
 	REAL
 	LITERAL
 	LOGICO
-	REGISTRO
-	REGISTRO_VAR
+	REGISTRO     //O tipo do registro em si
+	REGISTRO_VAR //declaracoes de um tipo de um registro
 	PONTEIRO
 	ENDERECO
 	FUNCAO
@@ -56,9 +54,6 @@ func (s *SymbolTable) NewSymbol(name string, symbolType Type) *Symbol {
 }
 
 func (s *SymbolTable) AddSymbol(name string, symbolType Type) {
-
-	log.Printf("Adding symbol %v with type %v", name, symbolType)
-
 	symbol := s.NewSymbol(name, symbolType)
 
 	s.Table[name] = symbol
@@ -83,7 +78,6 @@ func (s *SymbolTable) Exists(name string) bool {
 }
 
 func (s *SymbolTable) GetType(name string) Type {
-	log.Printf("Getting type for %v", name)
 	return s.Table[name].SymbolType
 }
 
