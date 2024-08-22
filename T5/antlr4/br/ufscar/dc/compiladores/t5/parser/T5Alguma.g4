@@ -281,7 +281,7 @@ constantes
     : numero_intervalo (VIRGULA numero_intervalo)*
     ;
 numero_intervalo
-    : op_unario? NUM_INT ('..' op_unario? NUM_INT)?
+    : op_unario? NUM_INT (INTERVALO op_unario? NUM_INT)?
     ;
 
 // Regras de definição de expressões relacionais.

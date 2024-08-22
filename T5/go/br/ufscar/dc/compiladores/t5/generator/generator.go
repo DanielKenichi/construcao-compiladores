@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"strconv"
 	"strings"
 
 	parser "github.com/DanielKenichi/construcao-compiladores/T5/antlr4/br/ufscar/dc/compiladores/t5/parser/Alguma"
@@ -101,12 +102,12 @@ func (g *AlgumaGenerator) VisitCmd(ctxs []parser.ICmdContext) []string {
 			continue
 		}
 
-		// if ctx.CmdCaso() != nil {
-		// 	result := g.VisitCmdCaso(ctx.CmdCaso())
-		// 	cmdResult = append(cmdResult, result...)
+		if ctx.CmdCaso() != nil {
+			result := g.VisitCmdCaso(ctx.CmdCaso())
+			cmdResult = append(cmdResult, result...)
 
-		// 	continue
-		// }
+			continue
+		}
 
 		// if ctx.CmdPara() != nil {
 		// 	result := g.VisitCmdPara(ctx.CmdPara())
@@ -264,19 +265,37 @@ func (g *AlgumaGenerator) VisitCmdSe(ctx parser.ICmdSeContext) []string {
 	return cmdSeResult
 }
 
-// func (g *AlgumaGenerator) VisitCmdCaso(ctx parser.ICmdCasoContext) []string {
-// 	cmdCasoResult := make([]string, 0)
+func (g *AlgumaGenerator) VisitCmdCaso(ctx parser.ICmdCasoContext) []string {
+	cmdCasoResult := make([]string, 0)
 
-// 	result := g.VisitExp_aritmetica(ctx.Exp_aritmetica())
+	result := []string{"\tswitch ("}
+	cmdCasoResult = append(cmdCasoResult, result...)
 
-// 	cmdCasoResult = append(cmdCasoResult, result...)
+	result = g.VisitExp_aritmetica(ctx.Exp_aritmetica())
+	cmdCasoResult = append(cmdCasoResult, result...)
 
-// 	result = g.VisitSelecao(ctx.Selecao())
+	result = []string{") {\n"}
+	cmdCasoResult = append(cmdCasoResult, result...)
 
-// 	cmdCasoResult = append(cmdCasoResult, result...)
+	// casos
+	result = g.VisitSelecao(ctx.Selecao())
+	cmdCasoResult = append(cmdCasoResult, result...)
 
-// 	return cmdCasoResult
-// }
+	// senao
+	if ctx.SENAO() != nil {
+		result = []string{"\tdefault:\n"}
+		cmdCasoResult = append(cmdCasoResult, result...)
+
+		cmdCasoResult = append(cmdCasoResult, "\t")
+		result = g.VisitCmd(ctx.AllCmd())
+		cmdCasoResult = append(cmdCasoResult, result...)
+	}
+
+	result = []string{"\t}\n"}
+	cmdCasoResult = append(cmdCasoResult, result...)
+
+	return cmdCasoResult
+}
 
 // func (g *AlgumaGenerator) VisitCmdPara(ctx parser.ICmdParaContext) []string {
 // 	cmdParaResult := make([]string, 0)
@@ -360,35 +379,77 @@ func (g *AlgumaGenerator) VisitCmdAtribuicao(ctx parser.ICmdAtribuicaoContext) [
 // 	return cmdChamadaResult
 // }
 
-// func (g *AlgumaGenerator) VisitSelecao(ctx parser.ISelecaoContext) []string {
-// 	selecaoResult := make([]string, 0)
+func (g *AlgumaGenerator) VisitSelecao(ctx parser.ISelecaoContext) []string {
+	selecaoResult := make([]string, 0)
 
-// 	for _, itemSelecao := range ctx.AllItem_selecao() {
-// 		result := g.VisitItem_selecao(itemSelecao)
+	for _, itemSelecao := range ctx.AllItem_selecao() {
+		result := g.VisitItem_selecao(itemSelecao)
+		selecaoResult = append(selecaoResult, result...)
+	}
 
-// 		selecaoResult = append(selecaoResult, result...)
-// 	}
+	return selecaoResult
+}
 
-// 	return selecaoResult
-// }
+func (g *AlgumaGenerator) VisitItem_selecao(ctx parser.IItem_selecaoContext) []string {
+	itemSelecaoResult := make([]string, 0)
 
-// func (g *AlgumaGenerator) VisitItem_selecao(ctx parser.IItem_selecaoContext) []string {
-// 	itemSelecaoResult := make([]string, 0)
+	result := g.VisitConstantes(ctx.Constantes())
+	itemSelecaoResult = append(itemSelecaoResult, result...)
 
-// 	result := g.VisitConstantes(ctx.Constantes())
+	result = g.VisitCmd(ctx.AllCmd())
+	itemSelecaoResult = append(itemSelecaoResult, result...)
 
-// 	itemSelecaoResult = append(itemSelecaoResult, result...)
+	result = []string{"\tbreak;\n"}
+	itemSelecaoResult = append(itemSelecaoResult, result...)
 
-// 	result = g.VisitCmd(ctx.AllCmd())
+	return itemSelecaoResult
+}
 
-// 	itemSelecaoResult = append(itemSelecaoResult, result...)
+func (g *AlgumaGenerator) VisitConstantes(ctx parser.IConstantesContext) []string {
+	constantesResult := make([]string, 0)
 
-// 	return itemSelecaoResult
-// }
+	result := g.VisitNumero_intervalo(ctx.Numero_intervalo(0))
 
-// func (g *AlgumaGenerator) VisitConstantes(ctx parser.IConstantesContext) []string {
-// 	return make([]string, 0)
-// }
+	constantesResult = append(constantesResult, result...)
+
+	return constantesResult
+}
+
+func (g *AlgumaGenerator) VisitNumero_intervalo(ctx parser.INumero_intervaloContext) []string {
+	numeroIntervaloResult := make([]string, 0)
+	startIdx, endIdx := 0, 0
+	step := 1
+
+	// if ctx.Op_unario(0) != nil {
+	// 	result := []string{ctx.Op_unario(0).GetText()}
+	// 	numeroIntervaloResult = append(numeroIntervaloResult, result...)
+	// }
+
+	if ctx.NUM_INT(0) != nil {
+		startIdx, _ = strconv.Atoi(ctx.NUM_INT(0).GetText())
+		// numeroIntervaloResult = append(numeroIntervaloResult, result...)
+	}
+
+	if ctx.INTERVALO() != nil {
+		// if ctx.Op_unario(1) != nil {
+		// 	result := []string{ctx.Op_unario(1).GetText()}
+		// 	numeroIntervaloResult = append(numeroIntervaloResult, result...)
+		// }
+
+		endIdx, _ = strconv.Atoi(ctx.NUM_INT(1).GetText())
+
+		for i := startIdx; i <= endIdx; i += step {
+			result := []string{"\tcase ", strconv.Itoa(i), ":\n"}
+			numeroIntervaloResult = append(numeroIntervaloResult, result...)
+		}
+	}
+	if endIdx == 0 {
+		result := []string{"\tcase ", strconv.Itoa(startIdx), ":\n"}
+		numeroIntervaloResult = append(numeroIntervaloResult, result...)
+	}
+
+	return numeroIntervaloResult
+}
 
 func (g *AlgumaGenerator) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_variaveisContext) []string {
 
@@ -565,68 +626,74 @@ func (g *AlgumaGenerator) VisitTipo_variavel(ctx parser.ITipo_variavelContext) [
 	return tipoVariavelResult
 }
 
-// func (g *AlgumaGenerator) VisitExp_aritmetica(ctx parser.IExp_aritmeticaContext) []string {
-// 	expResult := make([]string, 0)
+func (g *AlgumaGenerator) VisitExp_aritmetica(ctx parser.IExp_aritmeticaContext) []string {
+	expResult := make([]string, 0)
 
-// 	result := g.VisitTermo(ctx.Termo(0))
+	result := g.VisitTermo(ctx.Termo(0))
+	expResult = append(expResult, result...)
 
-// 	expResult = append(expResult, result...)
+	aux := 0
+	for ctx.Op1(aux) != nil {
+		result = g.VisitOp1(ctx.Op1(aux))
+		expResult = append(expResult, result...)
 
-// 	aux := 0
+		aux++
 
-// 	for ctx.Op1(aux) != nil {
-// 		result = g.VisitOp1(ctx.Op1(aux))
+		result = g.VisitTermo(ctx.Termo(aux))
+		expResult = append(expResult, result...)
+	}
 
-// 		expResult = append(expResult, result...)
+	return expResult
+}
 
-// 		aux++
+func (g *AlgumaGenerator) VisitTermo(ctx parser.ITermoContext) []string {
+	termoResult := make([]string, 0)
 
-// 		result = g.VisitTermo(ctx.Termo(aux))
+	result := g.VisitFator(ctx.Fator(0))
+	termoResult = append(termoResult, result...)
 
-// 		expResult = append(expResult, result...)
-// 	}
+	aux := 0
+	for ctx.Op2(aux) != nil {
+		result = g.VisitOp2(ctx.Op2(aux))
+		termoResult = append(termoResult, result...)
 
-// 	return expResult
-// }
+		aux++
 
-// func (g *AlgumaGenerator) VisitTermo(ctx parser.ITermoContext) []string {
-// 	termoResult := make([]string, 0)
+		result = g.VisitFator(ctx.Fator(aux))
+		termoResult = append(termoResult, result...)
+	}
 
-// 	result := g.VisitFator(ctx.Fator(0))
+	return termoResult
+}
 
-// 	termoResult = append(termoResult, result...)
+func (g *AlgumaGenerator) VisitOp1(ctx parser.IOp1Context) []string {
+	op1Result := make([]string, 0)
 
-// 	aux := 0
+	return op1Result
+}
 
-// 	for ctx.Op2(aux) != nil {
-// 		result = g.VisitOp2(ctx.Op2(aux))
+func (g *AlgumaGenerator) VisitFator(ctx parser.IFatorContext) []string {
+	fatorResult := make([]string, 0)
 
-// 		termoResult = append(termoResult, result...)
+	result := g.VerifyParcela(ctx.Parcela(0))
+	fatorResult = append(fatorResult, result...)
 
-// 		aux++
+	aux := 0
+	for ctx.Op3(aux) != nil {
+		result = []string{ctx.Op3(aux).GetText()}
+		fatorResult = append(fatorResult, result...)
 
-// 		result = g.VisitFator(ctx.Fator(aux))
+		aux++
 
-// 		termoResult = append(termoResult, result...)
-// 	}
+		result = g.VerifyParcela(ctx.Parcela(aux))
+		fatorResult = append(fatorResult, result...)
+	}
 
-// 	return termoResult
-// }
+	return fatorResult
+}
 
-// func (g *AlgumaGenerator) VisitOp1(ctx parser.IOp1Context) []string {
-// 	op1Result := make([]string, 0)
+func (g *AlgumaGenerator) VisitOp2(ctx parser.IOp2Context) []string {
+	op2Result := make([]string, 0)
 
-// 	return op1Result
-// }
-
-// func (g *AlgumaGenerator) VisitFator(ctx parser.IFatorContext) []string {
-// 	fatorResult := make([]string, 0)
-
-// 	return fatorResult
-// }
-
-// func (g *AlgumaGenerator) VisitOp2(ctx parser.IOp2Context) []string {
-// 	op2Result := make([]string, 0)
-
-// 	return op2Result
-// }
+	return op2Result
+}
