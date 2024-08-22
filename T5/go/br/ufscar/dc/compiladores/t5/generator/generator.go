@@ -26,7 +26,6 @@ func New() *AlgumaGenerator {
 }
 
 func (g *AlgumaGenerator) VisitPrograma(ctx parser.IProgramaContext) []string {
-
 	var programaResult = make([]string, 0)
 
 	result := []string{"#include <stdio.h>\n", "#include <stdlib.h>\n", "\n"}
@@ -34,7 +33,6 @@ func (g *AlgumaGenerator) VisitPrograma(ctx parser.IProgramaContext) []string {
 
 	result = g.VisitDeclaracoes(ctx.Declaracoes())
 	programaResult = append(programaResult, result...)
-
 	programaResult = append(programaResult, "\n")
 
 	result = g.VisitCorpo(ctx.Corpo())
@@ -79,60 +77,61 @@ func (g *AlgumaGenerator) VisitCorpo(ctx parser.ICorpoContext) []string {
 
 func (g *AlgumaGenerator) VisitCmd(ctxs []parser.ICmdContext) []string {
 	cmdResult := make([]string, 0)
+	result := make([]string, 0)
 
 	for _, ctx := range ctxs {
-
+		result = []string{"\t"}
 		if ctx.CmdLeia() != nil {
-			result := g.VisitCmdLeia(ctx.CmdLeia())
+			result = append(result, g.VisitCmdLeia(ctx.CmdLeia())...)
 			cmdResult = append(cmdResult, result...)
 
 			continue
 		}
 
 		if ctx.CmdEscreva() != nil {
-			result := g.VisitCmdEscreva(ctx.CmdEscreva())
+			result = append(result, g.VisitCmdEscreva(ctx.CmdEscreva())...)
 			cmdResult = append(cmdResult, result...)
 
 			continue
 		}
 
 		if ctx.CmdSe() != nil {
-			result := g.VisitCmdSe(ctx.CmdSe())
+			result = append(result, g.VisitCmdSe(ctx.CmdSe())...)
 			cmdResult = append(cmdResult, result...)
 
 			continue
 		}
 
 		if ctx.CmdCaso() != nil {
-			result := g.VisitCmdCaso(ctx.CmdCaso())
+			result = append(result, g.VisitCmdCaso(ctx.CmdCaso())...)
 			cmdResult = append(cmdResult, result...)
 
 			continue
 		}
 
-		// if ctx.CmdPara() != nil {
-		// 	result := g.VisitCmdPara(ctx.CmdPara())
-		// 	cmdResult = append(cmdResult, result...)
+		if ctx.CmdPara() != nil {
+			result = append(result, g.VisitCmdPara(ctx.CmdPara())...)
+			cmdResult = append(cmdResult, result...)
 
-		// 	continue
-		// }
+			continue
+		}
 
-		// if ctx.CmdEnquanto() != nil {
-		// 	result := g.VisitCmdEnquanto(ctx.CmdEnquanto())
-		// 	cmdResult = append(cmdResult, result...)
+		if ctx.CmdEnquanto() != nil {
+			result = append(result, g.VisitCmdEnquanto(ctx.CmdEnquanto())...)
+			cmdResult = append(cmdResult, result...)
 
-		// 	continue
-		// }
+			continue
+		}
 
-		// if ctx.CmdFaca() != nil {
-		// 	result := g.VisitCmdFaca(ctx.CmdFaca())
-		// 	cmdResult = append(cmdResult, result...)
+		if ctx.CmdFaca() != nil {
+			result = append(result, g.VisitCmdFaca(ctx.CmdFaca())...)
+			cmdResult = append(cmdResult, result...)
 
-		// 	continue
-		// }
+			continue
+		}
 
 		if ctx.CmdAtribuicao() != nil {
-			result := g.VisitCmdAtribuicao(ctx.CmdAtribuicao())
+			result = append(result, g.VisitCmdAtribuicao(ctx.CmdAtribuicao())...)
 			cmdResult = append(cmdResult, result...)
 
 			continue
@@ -164,22 +163,15 @@ func (g *AlgumaGenerator) VisitCmdLeia(ctx parser.ICmdLeiaContext) []string {
 	for _, ident := range ctx.AllIdentificador() {
 		tipo := g.GetIdentifierType(ident)
 		if tipo == symboltable.LITERAL {
-			readFunction = "\tgets("
+			readFunction = "gets("
 			result = []string{readFunction, ident.GetText()}
 		} else {
-			readFunction = "\tscanf("
+			readFunction = "scanf("
 			operator := "\"" + g.MapTypeToOperatorC(tipo) + "\"" + ", &"
 			result = []string{readFunction, operator, ident.GetText()}
 		}
 		cmdLeiaResult = append(cmdLeiaResult, result...)
-
 	}
-
-	// for _, ident := range ctx.AllIdentificador() {
-	// 	result := g.VerifyIdentifier(ident)
-
-	// 	cmdLeiaResult = append(cmdLeiaResult, result...)
-	// }
 
 	result = []string{");\n"}
 	cmdLeiaResult = append(cmdLeiaResult, result...)
@@ -189,45 +181,25 @@ func (g *AlgumaGenerator) VisitCmdLeia(ctx parser.ICmdLeiaContext) []string {
 
 func (g *AlgumaGenerator) VisitCmdEscreva(ctx parser.ICmdEscrevaContext) []string {
 	cmdEscrevaResult := make([]string, 0)
+	result := make([]string, 0)
 
-	result := []string{"\tprintf(\""}
-	cmdEscrevaResult = append(cmdEscrevaResult, result...)
-
-	expressionType := g.GetExpressaoType(ctx.Expressao(0))
-	operator := g.MapTypeToOperatorC(expressionType)
-
-	// adiciona a string
-	if strings.Contains(ctx.Expressao(0).GetText(), "\"") {
-		cmdEscrevaResult = append(cmdEscrevaResult, strings.ReplaceAll(ctx.Expressao(0).GetText(), "\"", ""))
-	}
-
-	// adiciona a formatString
 	for _, expressao := range ctx.AllExpressao() {
-		if strings.Contains(expressao.GetText(), "\"") {
-			continue
-		}
 		expressionType := g.GetExpressaoType(expressao)
-		operator = g.MapTypeToOperatorC(expressionType)
+		operator := g.MapTypeToOperatorC(expressionType)
+		result = []string{"printf(\""}
 
-		result = []string{operator}
-		cmdEscrevaResult = append(cmdEscrevaResult, result...)
-	}
-
-	// fecha aspas
-	cmdEscrevaResult = append(cmdEscrevaResult, "\"")
-
-	// lista variaveis
-	for _, expressao := range ctx.AllExpressao() {
 		if strings.Contains(expressao.GetText(), "\"") {
-			continue
+			result = append(result, strings.ReplaceAll(expressao.GetText(), "\"", ""))
+			result = append(result, "\"")
+		} else {
+			result = append(result, operator)
+			result = append(result, "\", ")
+			result = append(result, g.VisitExpressao(expressao)...)
 		}
-		result = []string{", "}
-		result = append(result, g.VisitExpressao(expressao)...)
+
+		result = append(result, ");\n")
 		cmdEscrevaResult = append(cmdEscrevaResult, result...)
 	}
-
-	result = []string{");\n"}
-	cmdEscrevaResult = append(cmdEscrevaResult, result...)
 
 	return cmdEscrevaResult
 }
@@ -235,7 +207,7 @@ func (g *AlgumaGenerator) VisitCmdEscreva(ctx parser.ICmdEscrevaContext) []strin
 func (g *AlgumaGenerator) VisitCmdSe(ctx parser.ICmdSeContext) []string {
 	cmdSeResult := make([]string, 0)
 
-	result := []string{"\tif ("}
+	result := []string{"if ("}
 	cmdSeResult = append(cmdSeResult, result...)
 
 	result = g.VisitExpressao(ctx.Expressao())
@@ -244,7 +216,6 @@ func (g *AlgumaGenerator) VisitCmdSe(ctx parser.ICmdSeContext) []string {
 	result = []string{") {\n"}
 	cmdSeResult = append(cmdSeResult, result...)
 
-	cmdSeResult = append(cmdSeResult, "\t")
 	result = g.VisitCmd(ctx.GetSeCmds())
 	cmdSeResult = append(cmdSeResult, result...)
 
@@ -255,7 +226,6 @@ func (g *AlgumaGenerator) VisitCmdSe(ctx parser.ICmdSeContext) []string {
 		result = []string{"\telse {\n"}
 		cmdSeResult = append(cmdSeResult, result...)
 
-		cmdSeResult = append(cmdSeResult, "\t")
 		result = g.VisitCmd(ctx.GetSenaoCmds())
 		cmdSeResult = append(cmdSeResult, result...)
 
@@ -269,7 +239,7 @@ func (g *AlgumaGenerator) VisitCmdSe(ctx parser.ICmdSeContext) []string {
 func (g *AlgumaGenerator) VisitCmdCaso(ctx parser.ICmdCasoContext) []string {
 	cmdCasoResult := make([]string, 0)
 
-	result := []string{"\tswitch ("}
+	result := []string{"switch ("}
 	cmdCasoResult = append(cmdCasoResult, result...)
 
 	result = g.VisitExp_aritmetica(ctx.Exp_aritmetica())
@@ -298,57 +268,72 @@ func (g *AlgumaGenerator) VisitCmdCaso(ctx parser.ICmdCasoContext) []string {
 	return cmdCasoResult
 }
 
-// func (g *AlgumaGenerator) VisitCmdPara(ctx parser.ICmdParaContext) []string {
-// 	cmdParaResult := make([]string, 0)
+func (g *AlgumaGenerator) VisitCmdPara(ctx parser.ICmdParaContext) []string {
+	cmdParaResult := make([]string, 0)
+	result := make([]string, 0)
 
-// 	result := g.VisitExp_aritmetica(ctx.GetExp1())
+	result = append(result, "for (")
 
-// 	cmdParaResult = append(cmdParaResult, result...)
+	result = append(result, ctx.IDENT().GetText())
+	result = append(result, " = ")
+	result = append(result, g.VisitExp_aritmetica(ctx.GetExp1())...)
+	result = append(result, "; ")
+	result = append(result, ctx.IDENT().GetText())
+	result = append(result, " <= ")
+	result = append(result, g.VisitExp_aritmetica(ctx.GetExp2())...)
+	result = append(result, "; ")
+	result = append(result, ctx.IDENT().GetText())
+	result = append(result, "++) {\n")
+	cmdParaResult = append(cmdParaResult, result...)
 
-// 	result = g.VisitExp_aritmetica(ctx.GetExp2())
+	result = []string{"\t"}
+	result = append(result, g.VisitCmd(ctx.AllCmd())...)
 
-// 	cmdParaResult = append(cmdParaResult, result...)
+	result = append(result, "\t}\n")
 
-// 	result = g.VisitCmd(ctx.AllCmd())
+	cmdParaResult = append(cmdParaResult, result...)
+	return cmdParaResult
+}
 
-// 	cmdParaResult = append(cmdParaResult, result...)
+func (g *AlgumaGenerator) VisitCmdEnquanto(ctx parser.ICmdEnquantoContext) []string {
+	cmdEnquantoResult := make([]string, 0)
+	result := make([]string, 0)
 
-// 	return cmdParaResult
-// }
+	result = append(result, "while (")
+	result = append(result, g.VisitExpressao(ctx.Expressao())...)
+	result = append(result, ") {\n")
 
-// func (g *AlgumaGenerator) VisitCmdEnquanto(ctx parser.ICmdEnquantoContext) []string {
-// 	cmdEnquantoResult := make([]string, 0)
+	result = append(result, "\t")
+	result = append(result, g.VisitCmd(ctx.AllCmd())...)
+	result = append(result, "\t}\n")
 
-// 	result := g.VisitExpressao(ctx.Expressao())
+	cmdEnquantoResult = append(cmdEnquantoResult, result...)
+	return cmdEnquantoResult
+}
 
-// 	cmdEnquantoResult = append(cmdEnquantoResult, result...)
+func (g *AlgumaGenerator) VisitCmdFaca(ctx parser.ICmdFacaContext) []string {
+	cmdFacaResult := make([]string, 0)
+	result := make([]string, 0)
 
-// 	result = g.VisitCmd(ctx.AllCmd())
+	result = append(result, "do {\n")
+	result = append(result, "\t")
 
-// 	cmdEnquantoResult = append(cmdEnquantoResult, result...)
+	result = append(result, g.VisitCmd(ctx.AllCmd())...)
+	result = append(result, "} while (")
 
-// 	return cmdEnquantoResult
-// }
+	result = append(result, g.VisitExpressao(ctx.Expressao())...)
 
-// func (g *AlgumaGenerator) VisitCmdFaca(ctx parser.ICmdFacaContext) []string {
-// 	cmdFacaResult := make([]string, 0)
+	result = append(result, ");\n")
 
-// 	result := g.VisitCmd(ctx.AllCmd())
+	cmdFacaResult = append(cmdFacaResult, result...)
 
-// 	cmdFacaResult = append(cmdFacaResult, result...)
-
-// 	result = g.VisitExpressao(ctx.Expressao())
-
-// 	cmdFacaResult = append(cmdFacaResult, result...)
-
-// 	return cmdFacaResult
-// }
+	return cmdFacaResult
+}
 
 func (g *AlgumaGenerator) VisitCmdAtribuicao(ctx parser.ICmdAtribuicaoContext) []string {
 	cmdAtibuicaoResult := make([]string, 0)
-	result := []string{"\t"}
+	result := make([]string, 0)
 
-	// result := g.VisitIdentificador(ctx.Identificador())
 	result = append(result, ctx.Identificador().GetText(), " = ")
 	cmdAtibuicaoResult = append(cmdAtibuicaoResult, result...)
 
@@ -457,7 +442,8 @@ func (g *AlgumaGenerator) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_
 
 	for _, ctx := range ctxs {
 		if ctx.DECLARE() != nil {
-			result := g.VisitVariavel(ctx.Variavel())
+			result := []string{"\t"}
+			result = append(result, g.VisitVariavel(ctx.Variavel())...)
 			variaveisResult = append(variaveisResult, result...)
 
 			g.AddVarToSymbolTable(ctx.Variavel(), g.Scopes.CurrentScope())
@@ -618,7 +604,6 @@ func (g *AlgumaGenerator) VisitTipo_variavel(ctx parser.ITipo_variavelContext) [
 	result := make([]string, 0)
 
 	if ctx.Tipo_basico() != nil {
-		result = []string{"\t"}
 		result = append(result, g.VisitTipo_basico(ctx.Tipo_basico())...)
 		tipoVariavelResult = append(tipoVariavelResult, result...)
 	}
