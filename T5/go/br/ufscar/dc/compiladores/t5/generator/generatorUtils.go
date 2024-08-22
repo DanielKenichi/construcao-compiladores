@@ -54,6 +54,14 @@ func (g *AlgumaGenerator) AddVarToSymbolTable(variavel parser.IVariavelContext, 
 	return addSymbolTableResult
 }
 
+func (g *AlgumaGenerator) AddConstToSymbolTable(identifier antlr.TerminalNode, basicType parser.ITipo_basicoContext) []string {
+	varType := MapBasicTypeToSymbolType(basicType)
+
+	result := g.AddIdentifierToSymbolTable(identifier, varType, g.Scopes.CurrentScope())
+
+	return result
+}
+
 func (g *AlgumaGenerator) VerifyExpression(expression parser.IExpressaoContext) []string {
 	result := make([]string, 0)
 	for index, termoLogico := range expression.AllTermo_logico() {

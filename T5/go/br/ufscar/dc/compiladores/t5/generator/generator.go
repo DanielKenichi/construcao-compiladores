@@ -32,8 +32,10 @@ func (g *AlgumaGenerator) VisitPrograma(ctx parser.IProgramaContext) []string {
 	result := []string{"#include <stdio.h>\n", "#include <stdlib.h>\n", "\n"}
 	programaResult = append(programaResult, result...)
 
-	// result = g.VisitDeclaracoes(ctx.Declaracoes())
-	// programaResult = append(programaResult, result...)
+	result = g.VisitDeclaracoes(ctx.Declaracoes())
+	programaResult = append(programaResult, result...)
+
+	programaResult = append(programaResult, "\n")
 
 	result = g.VisitCorpo(ctx.Corpo())
 	programaResult = append(programaResult, result...)
@@ -42,20 +44,19 @@ func (g *AlgumaGenerator) VisitPrograma(ctx parser.IProgramaContext) []string {
 
 }
 
-// func (g *AlgumaGenerator) VisitDeclaracoes(ctx parser.IDeclaracoesContext) []string {
+func (g *AlgumaGenerator) VisitDeclaracoes(ctx parser.IDeclaracoesContext) []string {
+	g.Scopes.NewScope()
 
-// 	g.Scopes.NewScope()
+	declaracoesResult := make([]string, 0)
 
-// 	declaracoesResult := make([]string, 0)
+	result := g.VisitDeclaracoes_variaveis(ctx.AllDeclaracoes_variaveis())
+	declaracoesResult = append(declaracoesResult, result...)
 
-// 	result := g.VisitDeclaracoes_variaveis(ctx.AllDeclaracoes_variaveis())
-// 	declaracoesResult = append(declaracoesResult, result...)
+	// result = g.VisitDeclaracoes_funcoes(ctx.AllDeclaracoes_funcoes())
+	// declaracoesResult = append(declaracoesResult, result...)
 
-// 	result = g.VisitDeclaracoes_funcoes(ctx.AllDeclaracoes_funcoes())
-// 	declaracoesResult = append(declaracoesResult, result...)
-
-// 	return declaracoesResult
-// }
+	return declaracoesResult
+}
 
 func (g *AlgumaGenerator) VisitCorpo(ctx parser.ICorpoContext) []string {
 	g.Scopes.NewScope()
@@ -452,7 +453,6 @@ func (g *AlgumaGenerator) VisitNumero_intervalo(ctx parser.INumero_intervaloCont
 }
 
 func (g *AlgumaGenerator) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_variaveisContext) []string {
-
 	variaveisResult := make([]string, 0)
 
 	for _, ctx := range ctxs {
@@ -465,18 +465,20 @@ func (g *AlgumaGenerator) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_
 			continue
 		}
 
-		// if ctx.CONSTANTE() != nil {
-		// 	result := g.VisitTipo_basico(ctx.Tipo_basico())
-		// 	variaveisResult = append(variaveisResult, result...)
+		if ctx.CONSTANTE() != nil {
+			result := []string{"#define ", ctx.IDENT().GetText(), " "}
 
-		// 	result = g.VisitValor_constante(ctx.Valor_constante())
-		// 	variaveisResult = append(variaveisResult, result...)
+			// result = append(result, g.VisitTipo_basico(ctx.Tipo_basico())...)
+			// variaveisResult = append(variaveisResult, result...)
 
-		// 	result = g.AddConstToSymbolTable(ctx.IDENT(), ctx.Tipo_basico())
-		// 	variaveisResult = append(variaveisResult, result...)
+			// result = g.VisitValor_constante(ctx.Valor_constante())
+			result = append(result, ctx.Valor_constante().GetText(), "\n")
+			variaveisResult = append(variaveisResult, result...)
 
-		// 	continue
-		// }
+			g.AddConstToSymbolTable(ctx.IDENT(), ctx.Tipo_basico())
+
+			continue
+		}
 
 		// if ctx.TIPO() != nil {
 		// 	result := g.VisitRegistro(ctx.Registro())
@@ -560,7 +562,7 @@ func (g *AlgumaGenerator) VisitExpressao(ctx parser.IExpressaoContext) []string 
 func (g *AlgumaGenerator) VisitTipo_basico(ctx parser.ITipo_basicoContext) []string {
 	tipoBasicoResult := make([]string, 0)
 
-	result := "\t" + g.MapTypeToTypeC(ctx) + " "
+	result := g.MapTypeToTypeC(ctx) + " "
 	tipoBasicoResult = append(tipoBasicoResult, result)
 
 	return tipoBasicoResult
@@ -613,9 +615,11 @@ func (g *AlgumaGenerator) VisitTipo(ctx parser.ITipoContext) []string {
 
 func (g *AlgumaGenerator) VisitTipo_variavel(ctx parser.ITipo_variavelContext) []string {
 	tipoVariavelResult := make([]string, 0)
+	result := make([]string, 0)
 
 	if ctx.Tipo_basico() != nil {
-		result := g.VisitTipo_basico(ctx.Tipo_basico())
+		result = []string{"\t"}
+		result = append(result, g.VisitTipo_basico(ctx.Tipo_basico())...)
 		tipoVariavelResult = append(tipoVariavelResult, result...)
 	}
 
