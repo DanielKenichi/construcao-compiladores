@@ -94,12 +94,12 @@ func (g *AlgumaGenerator) VisitCmd(ctxs []parser.ICmdContext) []string {
 			continue
 		}
 
-		// if ctx.CmdSe() != nil {
-		// 	result := g.VisitCmdSe(ctx.CmdSe())
-		// 	cmdResult = append(cmdResult, result...)
+		if ctx.CmdSe() != nil {
+			result := g.VisitCmdSe(ctx.CmdSe())
+			cmdResult = append(cmdResult, result...)
 
-		// 	continue
-		// }
+			continue
+		}
 
 		// if ctx.CmdCaso() != nil {
 		// 	result := g.VisitCmdCaso(ctx.CmdCaso())
@@ -166,7 +166,7 @@ func (g *AlgumaGenerator) VisitCmdLeia(ctx parser.ICmdLeiaContext) []string {
 			result = []string{readFunction, ident.GetText()}
 		} else {
 			readFunction = "\tscanf("
-			operator := "\"" + g.mapTypeToOperatorC(tipo) + "\"" + ", &"
+			operator := "\"" + g.MapTypeToOperatorC(tipo) + "\"" + ", &"
 			result = []string{readFunction, operator, ident.GetText()}
 		}
 		cmdLeiaResult = append(cmdLeiaResult, result...)
@@ -192,7 +192,7 @@ func (g *AlgumaGenerator) VisitCmdEscreva(ctx parser.ICmdEscrevaContext) []strin
 	cmdEscrevaResult = append(cmdEscrevaResult, result...)
 
 	expressionType := g.GetExpressaoType(ctx.Expressao(0))
-	operator := g.mapTypeToOperatorC(expressionType)
+	operator := g.MapTypeToOperatorC(expressionType)
 
 	// adiciona a string
 	if strings.Contains(ctx.Expressao(0).GetText(), "\"") {
@@ -205,7 +205,7 @@ func (g *AlgumaGenerator) VisitCmdEscreva(ctx parser.ICmdEscrevaContext) []strin
 			continue
 		}
 		expressionType := g.GetExpressaoType(expressao)
-		operator = g.mapTypeToOperatorC(expressionType)
+		operator = g.MapTypeToOperatorC(expressionType)
 
 		result = []string{operator}
 		cmdEscrevaResult = append(cmdEscrevaResult, result...)
@@ -230,25 +230,39 @@ func (g *AlgumaGenerator) VisitCmdEscreva(ctx parser.ICmdEscrevaContext) []strin
 	return cmdEscrevaResult
 }
 
-// func (g *AlgumaGenerator) VisitCmdSe(ctx parser.ICmdSeContext) []string {
-// 	cmdSeResult := make([]string, 0)
+func (g *AlgumaGenerator) VisitCmdSe(ctx parser.ICmdSeContext) []string {
+	cmdSeResult := make([]string, 0)
 
-// 	result := g.VisitExpressao(ctx.Expressao())
+	result := []string{"\tif ("}
+	cmdSeResult = append(cmdSeResult, result...)
 
-// 	cmdSeResult = append(cmdSeResult, result...)
+	result = g.VisitExpressao(ctx.Expressao())
+	cmdSeResult = append(cmdSeResult, result...)
 
-// 	result = g.VisitCmd(ctx.GetSeCmds())
+	result = []string{") {\n"}
+	cmdSeResult = append(cmdSeResult, result...)
 
-// 	cmdSeResult = append(cmdSeResult, result...)
+	cmdSeResult = append(cmdSeResult, "\t")
+	result = g.VisitCmd(ctx.GetSeCmds())
+	cmdSeResult = append(cmdSeResult, result...)
 
-// 	if ctx.SENAO() != nil {
-// 		result = g.VisitCmd(ctx.GetSenaoCmds())
+	result = []string{"\t}\n"}
+	cmdSeResult = append(cmdSeResult, result...)
 
-// 		cmdSeResult = append(cmdSeResult, result...)
-// 	}
+	if ctx.SENAO() != nil {
+		result = []string{"\telse {\n"}
+		cmdSeResult = append(cmdSeResult, result...)
 
-// 	return cmdSeResult
-// }
+		cmdSeResult = append(cmdSeResult, "\t")
+		result = g.VisitCmd(ctx.GetSenaoCmds())
+		cmdSeResult = append(cmdSeResult, result...)
+
+		result = []string{"\t}\n"}
+		cmdSeResult = append(cmdSeResult, result...)
+	}
+
+	return cmdSeResult
+}
 
 // func (g *AlgumaGenerator) VisitCmdCaso(ctx parser.ICmdCasoContext) []string {
 // 	cmdCasoResult := make([]string, 0)
@@ -485,7 +499,7 @@ func (g *AlgumaGenerator) VisitExpressao(ctx parser.IExpressaoContext) []string 
 func (g *AlgumaGenerator) VisitTipo_basico(ctx parser.ITipo_basicoContext) []string {
 	tipoBasicoResult := make([]string, 0)
 
-	result := "\t" + g.mapTypeToTypeC(ctx) + " "
+	result := "\t" + g.MapTypeToTypeC(ctx) + " "
 	tipoBasicoResult = append(tipoBasicoResult, result)
 
 	return tipoBasicoResult

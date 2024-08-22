@@ -75,21 +75,29 @@ func (g *AlgumaGenerator) VerifyTermoLogico(termoLogico parser.ITermo_logicoCont
 	parcelaLogicaResult := make([]string, 0)
 	result := make([]string, 0)
 
-	for index, fatorLogico := range termoLogico.AllFator_logico() {
+	if termoLogico.Fator_logico(0).NAO() != nil {
+		result = append(result, ("!("))
+	}
+
+	result = append(result, g.VerifyParcelaLogica(termoLogico.Fator_logico(0).Parcela_logica())...)
+
+	if termoLogico.Fator_logico(0).NAO() != nil {
+		result = append(result, ")")
+	}
+	parcelaLogicaResult = append(parcelaLogicaResult, result...)
+
+	for index, fatorLogico := range termoLogico.AllFator_logico()[1:] {
+		if termoLogico.Op_logico_2(index) != nil {
+			result = []string{(" && ")} // E
+		}
 		if termoLogico.Fator_logico(index).NAO() != nil {
 			result = append(result, ("!("))
 		}
 
-		result = g.VerifyParcelaLogica(fatorLogico.Parcela_logica())
+		result = append(result, g.VerifyParcelaLogica(fatorLogico.Parcela_logica())...)
 
 		if termoLogico.Fator_logico(index).NAO() != nil {
 			result = append(result, (")"))
-		}
-
-		if index > 0 {
-			if termoLogico.Op_logico_2(index-1) != nil {
-				result = append(result, (" && ")) // E
-			}
 		}
 
 		parcelaLogicaResult = append(parcelaLogicaResult, result...)
@@ -110,14 +118,16 @@ func (g *AlgumaGenerator) VerifyParcelaLogica(parcelaLogica parser.IParcela_logi
 		return result
 	}
 
-	for _, expArit := range parcelaLogica.Exp_relacional().AllExp_aritmetica() {
-		expAritResult := g.VerifyExpressaoAritmetica(expArit)
-		result = append(result, expAritResult...)
+	expArit := parcelaLogica.Exp_relacional().Exp_aritmetica(0)
+	expAritResult := g.VerifyExpressaoAritmetica(expArit)
+	result = append(result, expAritResult...)
 
-		if parcelaLogica.Exp_relacional().Op_relacional() != nil {
-			opRelResult := g.VerifyOpRelacional(parcelaLogica.Exp_relacional().Op_relacional())
-			result = append(result, opRelResult...)
-		}
+	if parcelaLogica.Exp_relacional().Op_relacional() != nil {
+		opRelResult := g.VerifyOpRelacional(parcelaLogica.Exp_relacional().Op_relacional())
+		result = append(result, opRelResult...)
+
+		expAritResult = g.VerifyExpressaoAritmetica(parcelaLogica.Exp_relacional().Exp_aritmetica(1))
+		result = append(result, expAritResult...)
 	}
 
 	return result
@@ -235,6 +245,11 @@ func (g *AlgumaGenerator) VerifyParcela(parcela parser.IParcelaContext) []string
 
 func (g *AlgumaGenerator) VerifyOpRelacional(opRel parser.IOp_relacionalContext) []string {
 	result := make([]string, 0)
+	opC := g.MapOpRelToOpRelC(opRel)
+
+	if opRel != nil {
+		result = append(result, opC)
+	}
 
 	return result
 }
@@ -488,7 +503,7 @@ func (g *AlgumaGenerator) AddIdentifierToSymbolTable(identifier antlr.TerminalNo
 	return result
 }
 
-func (g *AlgumaGenerator) mapTypeToTypeC(tipo parser.ITipo_basicoContext) string {
+func (g *AlgumaGenerator) MapTypeToTypeC(tipo parser.ITipo_basicoContext) string {
 	originalType := tipo
 	typeC := ""
 
@@ -504,8 +519,8 @@ func (g *AlgumaGenerator) mapTypeToTypeC(tipo parser.ITipo_basicoContext) string
 
 	return typeC
 }
-func (g *AlgumaGenerator) mapTypeToOperatorC(tipo symboltable.Type) string {
 
+func (g *AlgumaGenerator) MapTypeToOperatorC(tipo symboltable.Type) string {
 	originalType := tipo
 	operatorC := ""
 
@@ -520,4 +535,25 @@ func (g *AlgumaGenerator) mapTypeToOperatorC(tipo symboltable.Type) string {
 	}
 
 	return operatorC
+}
+
+func (g *AlgumaGenerator) MapOpRelToOpRelC(parser parser.IOp_relacionalContext) string {
+	originalOp := parser
+	opC := ""
+
+	if originalOp.IGUAL() != nil {
+		opC = " == "
+	} else if originalOp.DIFERENTE() != nil {
+		opC = " != "
+	} else if originalOp.MAIOR() != nil {
+		opC = " > "
+	} else if originalOp.MAIORIGUAL() != nil {
+		opC = " >= "
+	} else if originalOp.MENOR() != nil {
+		opC = " < "
+	} else if originalOp.MENORIGUAL() != nil {
+		opC = " <= "
+	}
+
+	return opC
 }
