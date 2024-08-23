@@ -1,8 +1,11 @@
 package generator
 
 import (
+	"log"
+
 	parser "github.com/DanielKenichi/construcao-compiladores/T5/antlr4/br/ufscar/dc/compiladores/t5/parser/Alguma"
 	"github.com/DanielKenichi/construcao-compiladores/T5/go/br/ufscar/dc/compiladores/t5/symboltable"
+	"github.com/DanielKenichi/construcao-compiladores/T5/go/br/ufscar/dc/compiladores/t5/visitor"
 )
 
 func (g *AlgumaGenerator) VerifyExpression(expression parser.IExpressaoContext) []string {
@@ -109,7 +112,7 @@ func (g *AlgumaGenerator) VerifyTermo(termo parser.ITermoContext) []string {
 		fatorResult := g.VerifyFator(fator)
 
 		if i > 0 {
-			if termo.Op2(i) != nil {
+			if termo.Op2(i-1) != nil {
 				result = append(result, " ", termo.Op2(i-1).GetText(), " ")
 			}
 		}
@@ -152,14 +155,6 @@ func (g *AlgumaGenerator) VerifyParcela(parcela parser.IParcelaContext) []string
 			// }
 			identifier := parcela.Parcela_unario().Identificador().GetText()
 			parcelaResult = append(parcelaResult, identifier)
-
-			// if parcela.Parcela_unario().Identificador() != nil {
-			// 	identifier := parcela.Parcela_unario().Identificador()
-
-			// 	result := []string{identifier.GetText()}
-			// 	parcelaResult = append(parcelaResult, result...)
-
-			// 	return g.GetIdentifierType(identifier), parcelaResult
 		} else if parcela.Parcela_unario().NUM_INT() != nil {
 			result := parcela.Parcela_unario().NUM_INT().GetText()
 			parcelaResult = append(parcelaResult, result)
@@ -168,22 +163,23 @@ func (g *AlgumaGenerator) VerifyParcela(parcela parser.IParcelaContext) []string
 			parcelaResult = append(parcelaResult, result)
 		} else if parcela.Parcela_unario().IDENT() == nil && parcela.Parcela_unario().ABREPAR() != nil {
 			return g.VerifyExpression(parcela.Parcela_unario().Expressao(0))
+		} else if parcela.Parcela_unario().IDENT() != nil {
+			ident := parcela.Parcela_unario().IDENT()
+
+			parcelaResult = append(parcelaResult, ident.GetText())
+			parcelaResult = append(parcelaResult, "(")
+
+			for i, expressao := range parcela.Parcela_unario().AllExpressao() {
+				parcelaResult = append(parcelaResult, g.VerifyExpression(expressao)...)
+
+				if parcela.Parcela_unario().Expressao(i+1) != nil {
+					parcelaResult = append(parcelaResult, ", ")
+				}
+
+			}
+
+			parcelaResult = append(parcelaResult, ")")
 		}
-		// } else if parcela.Parcela_unario().NUM_INT() != nil {
-		// 	return symboltable.INTEIRO, parcelaResult
-		// } else if parcela.Parcela_unario().NUM_REAL() != nil {
-		// 	return symboltable.REAL, parcelaResult
-		// } else if parcela.Parcela_unario().IDENT() != nil {
-		// 	ident := parcela.Parcela_unario().IDENT()
-
-		// 	result := g.VerifyFuncCall(ident, parcela.Parcela_unario().AllExpressao())
-
-		// 	parcelaResult = append(parcelaResult, result...)
-
-		// 	funcSymbol := g.GetFuncVarSymbol(ident.GetText())
-
-		// 	return MapStringToType(funcSymbol.ReturnType), parcelaResult
-		//}
 	}
 
 	if parcela.Parcela_nao_unario() != nil {
@@ -252,11 +248,20 @@ func (g *AlgumaGenerator) GetAllScopesType(ident string) symboltable.Type {
 	return symboltable.INVALIDO
 }
 
+func (g *AlgumaGenerator) GetFunctionReturnType(function string) symboltable.Type {
+	functionSymbol := g.Visitor.GetFuncVarSymbol(function)
+
+	return visitor.MapStringToType(functionSymbol.ReturnType)
+}
+
 func (g *AlgumaGenerator) GetParcelaUnarioType(ctx parser.IParcela_unarioContext) symboltable.Type {
 	expectedType := symboltable.INVALIDO
 
+	log.Printf("ParcelaUnario %v", ctx.GetText())
+
 	if ctx.Identificador() != nil {
 		nome := ctx.Identificador().IDENT(0).GetText()
+		log.Printf("Identifier %v", nome)
 
 		if len(ctx.Identificador().AllPONTO()) > 0 {
 			// TODO: registros
@@ -264,14 +269,23 @@ func (g *AlgumaGenerator) GetParcelaUnarioType(ctx parser.IParcela_unarioContext
 
 		return g.GetAllScopesType(nome)
 	}
+
+	if ctx.IDENT() != nil {
+		return g.GetFunctionReturnType(ctx.IDENT().GetText())
+	}
+
 	if ctx.PONTEIRO() != nil {
-		expectedType = symboltable.PONTEIRO
+		return symboltable.PONTEIRO
 	}
 	if ctx.NUM_INT() != nil {
-		expectedType = symboltable.INTEIRO
+		return symboltable.INTEIRO
 	}
 	if ctx.NUM_REAL() != nil {
-		expectedType = symboltable.REAL
+		return symboltable.REAL
+	}
+
+	if ctx.ABREPAR() != nil {
+		return g.GetExpressaoType(ctx.Expressao(0))
 	}
 
 	return expectedType
@@ -296,9 +310,11 @@ func (g *AlgumaGenerator) GetParcelaNaoUnarioType(ctx parser.IParcela_nao_unario
 func (g *AlgumaGenerator) GetParcelaType(ctx parser.IParcelaContext) symboltable.Type {
 	if ctx.Parcela_unario() != nil {
 		parcelaUnariotype := g.GetParcelaUnarioType(ctx.Parcela_unario())
+		log.Printf("ParcelaUnarioType %v", parcelaUnariotype)
 		return parcelaUnariotype
 	} else if (ctx.Parcela_nao_unario()) != nil {
 		parcelaNUnarioType := g.GetParcelaNaoUnarioType(ctx.Parcela_nao_unario())
+		log.Printf("ParcelaNaoUnarioType %v", parcelaNUnarioType)
 		return parcelaNUnarioType
 	}
 
@@ -317,6 +333,8 @@ func (g *AlgumaGenerator) GetFatorType(ctx parser.IFatorContext) symboltable.Typ
 			}
 		}
 	}
+
+	log.Printf("ParcelaType %v", expectedType)
 
 	return expectedType
 }

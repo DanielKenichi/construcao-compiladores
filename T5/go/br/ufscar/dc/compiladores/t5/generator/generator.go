@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"log"
 	"strconv"
 	"strings"
 
@@ -147,12 +148,12 @@ func (g *AlgumaGenerator) VisitCmd(ctxs []parser.ICmdContext) []string {
 			continue
 		}
 
-		// if ctx.CmdRetorne() != nil {
-		// 	result := g.VisitCmdRetorne(ctx.CmdRetorne())
-		// 	cmdResult = append(cmdResult, result...)
+		if ctx.CmdRetorne() != nil {
+			result = append(result, g.VisitCmdRetorne(ctx.CmdRetorne())...)
+			cmdResult = append(cmdResult, result...)
 
-		// 	continue
-		// }
+			continue
+		}
 	}
 
 	return cmdResult
@@ -188,6 +189,10 @@ func (g *AlgumaGenerator) VisitCmdEscreva(ctx parser.ICmdEscrevaContext) []strin
 
 	for _, expressao := range ctx.AllExpressao() {
 		expressionType := g.GetExpressaoType(expressao)
+
+		log.Printf("expressao %v", expressao.GetText())
+
+		log.Printf("expType %v", expressionType)
 
 		operator := g.MapTypeToOperatorC(expressionType)
 		result = []string{"printf(\""}
@@ -368,6 +373,8 @@ func (g *AlgumaGenerator) VisitCmdAtribuicao(ctx parser.ICmdAtribuicaoContext) [
 func (g *AlgumaGenerator) VisitCmdChamada(ctx parser.ICmdChamadaContext) []string {
 	cmdChamadaResult := make([]string, 0)
 
+	log.Print("Chamada")
+
 	cmdChamadaResult = append(cmdChamadaResult, ctx.IDENT().GetText())
 	cmdChamadaResult = append(cmdChamadaResult, "(")
 
@@ -383,11 +390,17 @@ func (g *AlgumaGenerator) VisitCmdChamada(ctx parser.ICmdChamadaContext) []strin
 	return cmdChamadaResult
 }
 
-// func (g *AlgumaGenerator) VisitCmdRetorne(ctx parser.ICmdRetorneContext) []string {
-// 	cmdChamadaResult := make([]string, 0)
+func (g *AlgumaGenerator) VisitCmdRetorne(ctx parser.ICmdRetorneContext) []string {
+	cmdChamadaResult := make([]string, 0)
 
-// 	return cmdChamadaResult
-// }
+	cmdChamadaResult = append(cmdChamadaResult, "return ")
+
+	cmdChamadaResult = append(cmdChamadaResult, g.VerifyExpression(ctx.Expressao())...)
+
+	cmdChamadaResult = append(cmdChamadaResult, ";\n")
+
+	return cmdChamadaResult
+}
 
 func (g *AlgumaGenerator) VisitSelecao(ctx parser.ISelecaoContext) []string {
 	selecaoResult := make([]string, 0)
@@ -502,6 +515,19 @@ func (g *AlgumaGenerator) VisitDeclaracoes_funcoes(ctxs []parser.IDeclaracoes_fu
 
 		if ctx.PROCEDIMENTO() != nil {
 			funcoesResult = append(funcoesResult, "void ")
+		} else if ctx.FUNCAO() != nil {
+
+			if ctx.Tipo_variavel().Tipo_basico() != nil {
+				funcoesResult = append(funcoesResult, g.MapParamToTypeC(ctx.Tipo_variavel().Tipo_basico()))
+			} else if ctx.Tipo_variavel().IDENT() != nil {
+				funcoesResult = append(funcoesResult, ctx.Tipo_variavel().IDENT().GetText())
+			}
+
+			if ctx.Tipo_variavel().PONTEIRO() != nil {
+				funcoesResult = append(funcoesResult, "*")
+			}
+
+			funcoesResult = append(funcoesResult, " ")
 		}
 
 		funcoesResult = append(funcoesResult, ctx.IDENT().GetText()+" ")
