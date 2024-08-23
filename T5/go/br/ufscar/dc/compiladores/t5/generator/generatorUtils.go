@@ -253,8 +253,9 @@ func (g *AlgumaGenerator) VerifyParcela(parcela parser.IParcelaContext) []string
 		} else if parcela.Parcela_unario().NUM_REAL() != nil {
 			result := parcela.Parcela_unario().NUM_REAL().GetText()
 			parcelaResult = append(parcelaResult, result)
+		} else if parcela.Parcela_unario().IDENT() == nil && parcela.Parcela_unario().ABREPAR() != nil {
+			return g.VerifyExpression(parcela.Parcela_unario().Expressao(0))
 		}
-
 		// } else if parcela.Parcela_unario().NUM_INT() != nil {
 		// 	return symboltable.INTEIRO, parcelaResult
 		// } else if parcela.Parcela_unario().NUM_REAL() != nil {
@@ -269,9 +270,7 @@ func (g *AlgumaGenerator) VerifyParcela(parcela parser.IParcelaContext) []string
 		// 	funcSymbol := g.GetFuncVarSymbol(ident.GetText())
 
 		// 	return MapStringToType(funcSymbol.ReturnType), parcelaResult
-		// } else if parcela.Parcela_unario().IDENT() == nil && parcela.Parcela_unario().ABREPAR() != nil {
-		// 	return g.VerifyExpression(parcela.Parcela_unario().Expressao(0))
-		// }
+		//}
 	}
 
 	if parcela.Parcela_nao_unario() != nil {
