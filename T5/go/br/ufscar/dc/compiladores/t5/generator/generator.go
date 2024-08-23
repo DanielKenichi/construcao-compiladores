@@ -334,7 +334,21 @@ func (g *AlgumaGenerator) VisitCmdAtribuicao(ctx parser.ICmdAtribuicaoContext) [
 	cmdAtibuicaoResult := make([]string, 0)
 	result := make([]string, 0)
 
-	result = append(result, ctx.Identificador().GetText(), " = ")
+	if ctx.PONTEIRO() != nil {
+		result = append(result, "*")
+	}
+
+	varType := g.GetIdentifierType(ctx.Identificador())
+
+	if varType == symboltable.LITERAL {
+		result = append(result, "strcpy(",
+			ctx.Identificador().GetText(),
+			", ")
+	} else {
+		result = append(result, ctx.Identificador().GetText())
+		result = append(result, " = ")
+	}
+
 	cmdAtibuicaoResult = append(cmdAtibuicaoResult, result...)
 
 	result = g.VisitExpressao(ctx.Expressao())
@@ -454,10 +468,6 @@ func (g *AlgumaGenerator) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_
 		if ctx.CONSTANTE() != nil {
 			result := []string{"#define ", ctx.IDENT().GetText(), " "}
 
-			// result = append(result, g.VisitTipo_basico(ctx.Tipo_basico())...)
-			// variaveisResult = append(variaveisResult, result...)
-
-			// result = g.VisitValor_constante(ctx.Valor_constante())
 			result = append(result, ctx.Valor_constante().GetText(), "\n")
 			variaveisResult = append(variaveisResult, result...)
 
@@ -506,8 +516,9 @@ func (g *AlgumaGenerator) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_
 
 func (g *AlgumaGenerator) VisitVariavel(ctx parser.IVariavelContext) []string {
 	variavelResult := make([]string, 0)
+	result := make([]string, 0)
 
-	result := g.VisitTipo(ctx.Tipo())
+	result = g.VisitTipo(ctx.Tipo())
 	variavelResult = append(variavelResult, result...)
 	strSize := "[80]"
 

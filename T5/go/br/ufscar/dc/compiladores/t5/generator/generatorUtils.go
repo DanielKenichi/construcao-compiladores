@@ -12,17 +12,17 @@ func (g *AlgumaGenerator) AddVarToSymbolTable(variavel parser.IVariavelContext, 
 
 	var varType symboltable.Type = symboltable.INVALIDO
 
-	// if variavel.Tipo().Registro() != nil {
-	// 	varType = symboltable.REGISTRO_VAR
-	// } else if variavel.Tipo().Tipo_variavel().PONTEIRO() != nil {
-	// 	varType = symboltable.PONTEIRO
-	// } else if variavel.Tipo().Tipo_variavel().Tipo_basico() != nil {
-	// 	basicType := variavel.Tipo().Tipo_variavel().Tipo_basico()
+	if variavel.Tipo().Registro() != nil {
+		varType = symboltable.REGISTRO_VAR
+	} else if variavel.Tipo().Tipo_variavel().PONTEIRO() != nil {
+		varType = symboltable.PONTEIRO
+	} else if variavel.Tipo().Tipo_variavel().Tipo_basico() != nil {
+		basicType := variavel.Tipo().Tipo_variavel().Tipo_basico()
 
-	// 	varType = MapBasicTypeToSymbolType(basicType)
-	// } else { //Tipo variavel eh um ident de um registro
-	// 	varType = symboltable.REGISTRO_VAR
-	// }
+		varType = MapBasicTypeToSymbolType(basicType)
+	} else { //Tipo variavel eh um ident de um registro
+		varType = symboltable.REGISTRO_VAR
+	}
 
 	if variavel.Tipo().Tipo_variavel().Tipo_basico() != nil {
 		basicType := variavel.Tipo().Tipo_variavel().Tipo_basico()
@@ -60,6 +60,36 @@ func (g *AlgumaGenerator) AddConstToSymbolTable(identifier antlr.TerminalNode, b
 	result := g.AddIdentifierToSymbolTable(identifier, varType, g.Scopes.CurrentScope())
 
 	return result
+}
+
+func (g *AlgumaGenerator) AddRegTypeToSymbolTable(identifier antlr.TerminalNode, reg parser.IRegistroContext) []string {
+	addRegResult := make([]string, 0)
+
+	varType := symboltable.REGISTRO
+
+	g.AddIdentifierToSymbolTable(identifier, varType, g.Scopes.CurrentScope())
+
+	regTable := g.Scopes.CurrentScope().GetSymbol(identifier.GetText()).InnerTable
+
+	g.AddRegInnerVarsToSymbolTable(reg, regTable)
+
+	return addRegResult
+}
+
+func (g *AlgumaGenerator) AddRegInnerVarsToSymbolTable(reg parser.IRegistroContext, table *symboltable.SymbolTable) []string {
+
+	result := make([]string, 0)
+
+	for _, variavel := range reg.AllVariavel() {
+		result = g.AddVarToSymbolTable(variavel, table)
+
+		if len(result) > 0 {
+			return result
+		}
+	}
+
+	return result
+
 }
 
 func (g *AlgumaGenerator) VerifyExpression(expression parser.IExpressaoContext) []string {

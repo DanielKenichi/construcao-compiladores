@@ -7,7 +7,6 @@ import (
 	parser "github.com/DanielKenichi/construcao-compiladores/T5/antlr4/br/ufscar/dc/compiladores/t5/parser/Alguma"
 	"github.com/DanielKenichi/construcao-compiladores/T5/go/br/ufscar/dc/compiladores/t5/errortokens"
 	"github.com/DanielKenichi/construcao-compiladores/T5/go/br/ufscar/dc/compiladores/t5/generator"
-	"github.com/DanielKenichi/construcao-compiladores/T5/go/br/ufscar/dc/compiladores/t5/visitor"
 	"github.com/DanielKenichi/construcao-compiladores/T5/go/br/ufscar/dc/compiladores/t5/vocabulary"
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -95,13 +94,13 @@ func main() {
 	// ANALISE SEMÂNTICA (T3) e (T4)
 	// -----------------------------------
 
-	algumaVisitor := visitor.New()
+	// algumaVisitor := visitor.New()
 
-	semanticErrors := algumaVisitor.VisitPrograma(tree)
+	// semanticErrors := algumaVisitor.VisitPrograma(tree)
 
-	for _, semanticError := range semanticErrors {
-		output.WriteString(semanticError)
-	}
+	// for _, semanticError := range semanticErrors {
+	// 	output.WriteString(semanticError)
+	// }
 
 	// -----------------------------------
 	// GERADOR DE CÓDIGO C
