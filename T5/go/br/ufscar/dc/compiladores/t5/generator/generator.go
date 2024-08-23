@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	parser "github.com/DanielKenichi/construcao-compiladores/T5/antlr4/br/ufscar/dc/compiladores/t5/parser/Alguma"
-	"github.com/DanielKenichi/construcao-compiladores/T5/go/br/ufscar/dc/compiladores/t5/scope"
 	"github.com/DanielKenichi/construcao-compiladores/T5/go/br/ufscar/dc/compiladores/t5/symboltable"
+	"github.com/DanielKenichi/construcao-compiladores/T5/go/br/ufscar/dc/compiladores/t5/visitor"
 )
 
 /*
@@ -16,12 +16,17 @@ import (
 
 type AlgumaGenerator struct {
 	parser.BaseT5AlgumaVisitor
-	Scopes *scope.Scope
+	Visitor *visitor.AlgumaVisitor
+
+	//TODO: Verificar maneira melhor de checar argumentos de procedimentos e funcoes
+	//Se for uma string vazia, checar os scopos. Se tiver um valor,
+	//checar scopo interno da funcao ou procedimento
+	checkFunction string
 }
 
-func New() *AlgumaGenerator {
+func New(visitor *visitor.AlgumaVisitor) *AlgumaGenerator {
 	return &AlgumaGenerator{
-		Scopes: scope.New(),
+		Visitor: visitor,
 	}
 }
 
@@ -43,21 +48,19 @@ func (g *AlgumaGenerator) VisitPrograma(ctx parser.IProgramaContext) []string {
 }
 
 func (g *AlgumaGenerator) VisitDeclaracoes(ctx parser.IDeclaracoesContext) []string {
-	g.Scopes.NewScope()
 
 	declaracoesResult := make([]string, 0)
 
 	result := g.VisitDeclaracoes_variaveis(ctx.AllDeclaracoes_variaveis())
 	declaracoesResult = append(declaracoesResult, result...)
 
-	// result = g.VisitDeclaracoes_funcoes(ctx.AllDeclaracoes_funcoes())
-	// declaracoesResult = append(declaracoesResult, result...)
+	result = g.VisitDeclaracoes_funcoes(ctx.AllDeclaracoes_funcoes())
+	declaracoesResult = append(declaracoesResult, result...)
 
 	return declaracoesResult
 }
 
 func (g *AlgumaGenerator) VisitCorpo(ctx parser.ICorpoContext) []string {
-	g.Scopes.NewScope()
 	corpoResult := make([]string, 0)
 
 	result := []string{"int main() {\n"}
@@ -137,12 +140,12 @@ func (g *AlgumaGenerator) VisitCmd(ctxs []parser.ICmdContext) []string {
 			continue
 		}
 
-		// if ctx.CmdChamada() != nil {
-		// 	result := g.VisitCmdChamada(ctx.CmdChamada())
-		// 	cmdResult = append(cmdResult, result...)
+		if ctx.CmdChamada() != nil {
+			result = append(result, g.VisitCmdChamada(ctx.CmdChamada())...)
+			cmdResult = append(cmdResult, result...)
 
-		// 	continue
-		// }
+			continue
+		}
 
 		// if ctx.CmdRetorne() != nil {
 		// 	result := g.VisitCmdRetorne(ctx.CmdRetorne())
@@ -185,6 +188,7 @@ func (g *AlgumaGenerator) VisitCmdEscreva(ctx parser.ICmdEscrevaContext) []strin
 
 	for _, expressao := range ctx.AllExpressao() {
 		expressionType := g.GetExpressaoType(expressao)
+
 		operator := g.MapTypeToOperatorC(expressionType)
 		result = []string{"printf(\""}
 
@@ -361,17 +365,23 @@ func (g *AlgumaGenerator) VisitCmdAtribuicao(ctx parser.ICmdAtribuicaoContext) [
 	return cmdAtibuicaoResult
 }
 
-// func (g *AlgumaGenerator) VisitCmdChamada(ctx parser.ICmdChamadaContext) []string {
-// 	cmdChamadaResult := make([]string, 0)
+func (g *AlgumaGenerator) VisitCmdChamada(ctx parser.ICmdChamadaContext) []string {
+	cmdChamadaResult := make([]string, 0)
 
-// 	ident := ctx.IDENT()
+	cmdChamadaResult = append(cmdChamadaResult, ctx.IDENT().GetText())
+	cmdChamadaResult = append(cmdChamadaResult, "(")
 
-// 	result := g.VerifyFuncCall(ident, ctx.AllExpressao())
+	for _, expression := range ctx.AllExpressao() {
+		result := g.VerifyExpression(expression)
 
-// 	cmdChamadaResult = append(cmdChamadaResult, result...)
+		cmdChamadaResult = append(cmdChamadaResult, result...)
 
-// 	return cmdChamadaResult
-// }
+	}
+
+	cmdChamadaResult = append(cmdChamadaResult, ");\n")
+
+	return cmdChamadaResult
+}
 
 // func (g *AlgumaGenerator) VisitCmdRetorne(ctx parser.ICmdRetorneContext) []string {
 // 	cmdChamadaResult := make([]string, 0)
@@ -460,8 +470,6 @@ func (g *AlgumaGenerator) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_
 			result = append(result, g.VisitVariavel(ctx.Variavel())...)
 			variaveisResult = append(variaveisResult, result...)
 
-			g.AddVarToSymbolTable(ctx.Variavel(), g.Scopes.CurrentScope())
-
 			continue
 		}
 
@@ -470,8 +478,6 @@ func (g *AlgumaGenerator) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_
 
 			result = append(result, ctx.Valor_constante().GetText(), "\n")
 			variaveisResult = append(variaveisResult, result...)
-
-			g.AddConstToSymbolTable(ctx.IDENT(), ctx.Tipo_basico())
 
 			continue
 		}
@@ -490,29 +496,64 @@ func (g *AlgumaGenerator) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_
 	return variaveisResult
 }
 
-// func (g *AlgumaGenerator) VisitDeclaracoes_funcoes(ctxs []parser.IDeclaracoes_funcoesContext) []string {
-// 	//TODO conferir tipo de retorno com o escopo
+func (g *AlgumaGenerator) VisitDeclaracoes_funcoes(ctxs []parser.IDeclaracoes_funcoesContext) []string {
+	funcoesResult := make([]string, 0)
+	for _, ctx := range ctxs {
 
-// 	funcoesResult := make([]string, 0)
-// 	for _, ctx := range ctxs {
-// 		result := g.AddFuncToSymbolTable(ctx)
-// 		funcoesResult = append(funcoesResult, result...)
+		if ctx.PROCEDIMENTO() != nil {
+			funcoesResult = append(funcoesResult, "void ")
+		}
 
-// 		symbol := g.GetFuncVarSymbol(ctx.IDENT().GetText())
+		funcoesResult = append(funcoesResult, ctx.IDENT().GetText()+" ")
+		funcoesResult = append(funcoesResult, "(")
 
-// 		if symbol.SymbolType == symboltable.PROCEDIMENTO {
-// 			for _, cmd := range ctx.AllCmd() {
-// 				if cmd.CmdRetorne() != nil {
-// 					funcoesResult = append(funcoesResult,
-// 						semanticError(cmd.CmdRetorne().RETORNE().GetSymbol(), "comando retorne nao permitido nesse escopo"))
-// 				}
-// 			}
-// 		}
+		for i, parametro := range ctx.Parametros().AllParametro() {
+			for j, ident := range parametro.AllIdentificador() {
 
-// 	}
+				if parametro.Tipo_variavel().Tipo_basico() != nil {
+					funcoesResult = append(funcoesResult, g.MapParamToTypeC(parametro.Tipo_variavel().Tipo_basico()))
+				} else if parametro.Tipo_variavel().IDENT() != nil {
+					funcoesResult = append(funcoesResult, parametro.Tipo_variavel().IDENT().GetText())
+				}
 
-// 	return funcoesResult
-// }
+				if parametro.Tipo_variavel().PONTEIRO() != nil {
+					funcoesResult = append(funcoesResult, "*")
+				}
+
+				funcoesResult = append(funcoesResult, " "+ident.GetText())
+
+				if parametro.Identificador(j+1) != nil {
+					funcoesResult = append(funcoesResult, ", ")
+				}
+			}
+
+			if ctx.Parametros().Parametro(i+1) != nil {
+				funcoesResult = append(funcoesResult, ", ")
+			}
+		}
+
+		funcoesResult = append(funcoesResult, ")")
+		funcoesResult = append(funcoesResult, "{ \n")
+
+		result := g.VisitDeclaracoes_variaveis(ctx.AllDeclaracoes_variaveis())
+
+		funcoesResult = append(funcoesResult, result...)
+
+		g.checkFunction = ctx.IDENT().GetText()
+
+		result = g.VisitCmd(ctx.AllCmd())
+
+		funcoesResult = append(funcoesResult, result...)
+
+		g.checkFunction = ""
+
+		funcoesResult = append(funcoesResult, "}")
+
+		funcoesResult = append(funcoesResult, "\n")
+	}
+
+	return funcoesResult
+}
 
 func (g *AlgumaGenerator) VisitVariavel(ctx parser.IVariavelContext) []string {
 	variavelResult := make([]string, 0)

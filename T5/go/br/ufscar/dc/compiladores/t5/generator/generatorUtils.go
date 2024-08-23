@@ -3,94 +3,7 @@ package generator
 import (
 	parser "github.com/DanielKenichi/construcao-compiladores/T5/antlr4/br/ufscar/dc/compiladores/t5/parser/Alguma"
 	"github.com/DanielKenichi/construcao-compiladores/T5/go/br/ufscar/dc/compiladores/t5/symboltable"
-	"github.com/antlr4-go/antlr/v4"
 )
-
-func (g *AlgumaGenerator) AddVarToSymbolTable(variavel parser.IVariavelContext, table *symboltable.SymbolTable) []string {
-
-	addSymbolTableResult := make([]string, 0)
-
-	var varType symboltable.Type = symboltable.INVALIDO
-
-	if variavel.Tipo().Registro() != nil {
-		varType = symboltable.REGISTRO_VAR
-	} else if variavel.Tipo().Tipo_variavel().PONTEIRO() != nil {
-		varType = symboltable.PONTEIRO
-	} else if variavel.Tipo().Tipo_variavel().Tipo_basico() != nil {
-		basicType := variavel.Tipo().Tipo_variavel().Tipo_basico()
-
-		varType = MapBasicTypeToSymbolType(basicType)
-	} else { //Tipo variavel eh um ident de um registro
-		varType = symboltable.REGISTRO_VAR
-	}
-
-	if variavel.Tipo().Tipo_variavel().Tipo_basico() != nil {
-		basicType := variavel.Tipo().Tipo_variavel().Tipo_basico()
-		varType = MapBasicTypeToSymbolType(basicType)
-	}
-
-	for _, idents := range variavel.AllIdentificador() {
-		for _, identName := range idents.AllIDENT() {
-			result := g.AddIdentifierToSymbolTable(identName, varType, table)
-
-			addSymbolTableResult = append(addSymbolTableResult, result...)
-
-			// if varType == symboltable.REGISTRO_VAR {
-			// 	if variavel.Tipo().Registro() != nil {
-			// 		regTable := table.GetSymbol(identName.GetText()).InnerTable
-
-			// 		result = g.AddRegInnerVarsToSymbolTable(variavel.Tipo().Registro(), regTable)
-
-			// 		addSymbolTableResult = append(addSymbolTableResult, result...)
-			// 	} else {
-			// 		regSymbol := g.GetRegTypeSymbol(variavel.Tipo().Tipo_variavel().IDENT().GetText())
-
-			// 		table.AddInnerTableToRegVar(identName.GetText(), *regSymbol.InnerTable)
-			// 	}
-			// }
-		}
-	}
-
-	return addSymbolTableResult
-}
-
-func (g *AlgumaGenerator) AddConstToSymbolTable(identifier antlr.TerminalNode, basicType parser.ITipo_basicoContext) []string {
-	varType := MapBasicTypeToSymbolType(basicType)
-
-	result := g.AddIdentifierToSymbolTable(identifier, varType, g.Scopes.CurrentScope())
-
-	return result
-}
-
-func (g *AlgumaGenerator) AddRegTypeToSymbolTable(identifier antlr.TerminalNode, reg parser.IRegistroContext) []string {
-	addRegResult := make([]string, 0)
-
-	varType := symboltable.REGISTRO
-
-	g.AddIdentifierToSymbolTable(identifier, varType, g.Scopes.CurrentScope())
-
-	regTable := g.Scopes.CurrentScope().GetSymbol(identifier.GetText()).InnerTable
-
-	g.AddRegInnerVarsToSymbolTable(reg, regTable)
-
-	return addRegResult
-}
-
-func (g *AlgumaGenerator) AddRegInnerVarsToSymbolTable(reg parser.IRegistroContext, table *symboltable.SymbolTable) []string {
-
-	result := make([]string, 0)
-
-	for _, variavel := range reg.AllVariavel() {
-		result = g.AddVarToSymbolTable(variavel, table)
-
-		if len(result) > 0 {
-			return result
-		}
-	}
-
-	return result
-
-}
 
 func (g *AlgumaGenerator) VerifyExpression(expression parser.IExpressaoContext) []string {
 	result := make([]string, 0)
@@ -292,7 +205,7 @@ func (g *AlgumaGenerator) VerifyOpRelacional(opRel parser.IOp_relacionalContext)
 }
 
 func (g *AlgumaGenerator) GetIdentifierType(identifier parser.IIdentificadorContext) symboltable.Type {
-	scopeToVerify := g.Scopes.CurrentScope()
+	scopeToVerify := g.Visitor.Scopes.CurrentScope()
 	var identName string
 
 	for _, ident := range identifier.AllIDENT() {
@@ -310,14 +223,27 @@ func (g *AlgumaGenerator) GetIdentifierType(identifier parser.IIdentificadorCont
 func (g *AlgumaGenerator) GetAllScopesType(ident string) symboltable.Type {
 	var idx int
 
-	for i, scope := range g.Scopes.Stack {
-		if scope == g.Scopes.CurrentScope() {
+	for i, scope := range g.Visitor.Scopes.Stack {
+		if scope == g.Visitor.Scopes.CurrentScope() {
 			idx = i
 			break
 		}
 	}
 
-	for _, scope := range g.Scopes.Stack[:idx+1] {
+	for _, scope := range g.Visitor.Scopes.Stack[:idx+1] {
+
+		if g.checkFunction != "" {
+			if scope.Exists(g.checkFunction) {
+				functionSymbol := scope.GetSymbol(g.checkFunction)
+
+				if functionSymbol.InnerTable.Exists(ident) {
+					return functionSymbol.InnerTable.GetType(ident)
+				}
+			} else {
+				continue
+			}
+		}
+
 		if scope.Exists(ident) {
 			return scope.GetType(ident)
 		}
@@ -369,9 +295,11 @@ func (g *AlgumaGenerator) GetParcelaNaoUnarioType(ctx parser.IParcela_nao_unario
 
 func (g *AlgumaGenerator) GetParcelaType(ctx parser.IParcelaContext) symboltable.Type {
 	if ctx.Parcela_unario() != nil {
-		return g.GetParcelaUnarioType(ctx.Parcela_unario())
+		parcelaUnariotype := g.GetParcelaUnarioType(ctx.Parcela_unario())
+		return parcelaUnariotype
 	} else if (ctx.Parcela_nao_unario()) != nil {
-		return g.GetParcelaNaoUnarioType(ctx.Parcela_nao_unario())
+		parcelaNUnarioType := g.GetParcelaNaoUnarioType(ctx.Parcela_nao_unario())
+		return parcelaNUnarioType
 	}
 
 	return symboltable.INVALIDO
@@ -447,7 +375,9 @@ func (g *AlgumaGenerator) GetExpRelacionalType(ctx parser.IExp_relacionalContext
 
 func (g *AlgumaGenerator) GetParcelaLogicaType(ctx parser.IParcela_logicaContext) symboltable.Type {
 	if ctx.Exp_relacional() != nil {
-		return g.GetExpRelacionalType(ctx.Exp_relacional())
+		expType := g.GetExpRelacionalType(ctx.Exp_relacional())
+
+		return expType
 	}
 
 	return symboltable.INVALIDO
@@ -455,7 +385,9 @@ func (g *AlgumaGenerator) GetParcelaLogicaType(ctx parser.IParcela_logicaContext
 
 func (g *AlgumaGenerator) GetFatorLogicoType(ctx parser.IFator_logicoContext) symboltable.Type {
 	if ctx.Parcela_logica() != nil {
-		return g.GetParcelaLogicaType(ctx.Parcela_logica())
+		parcelaType := g.GetParcelaLogicaType(ctx.Parcela_logica())
+
+		return parcelaType
 	}
 
 	return symboltable.INVALIDO
@@ -463,7 +395,6 @@ func (g *AlgumaGenerator) GetFatorLogicoType(ctx parser.IFator_logicoContext) sy
 
 func (g *AlgumaGenerator) GetTermoLogicoType(ctx parser.ITermo_logicoContext) symboltable.Type {
 	expectedType := g.GetFatorLogicoType(ctx.Fator_logico(0))
-
 	if expectedType != symboltable.INVALIDO {
 		for _, fatorLog := range ctx.AllFator_logico() {
 			actualType := g.GetFatorLogicoType(fatorLog)
@@ -532,14 +463,6 @@ func MapBasicTypeToSymbolType(basicType parser.ITipo_basicoContext) symboltable.
 	return symboltable.INVALIDO
 }
 
-func (g *AlgumaGenerator) AddIdentifierToSymbolTable(identifier antlr.TerminalNode, varType symboltable.Type, table *symboltable.SymbolTable) []string {
-	result := make([]string, 0)
-
-	table.AddSymbol(identifier.GetText(), varType)
-
-	return result
-}
-
 func (g *AlgumaGenerator) MapTypeToTypeC(tipo parser.ITipo_basicoContext) string {
 	originalType := tipo
 	typeC := ""
@@ -550,6 +473,23 @@ func (g *AlgumaGenerator) MapTypeToTypeC(tipo parser.ITipo_basicoContext) string
 		typeC = "float"
 	} else if originalType.LITERAL() != nil {
 		typeC = "char"
+	} else if originalType.LOGICO() != nil {
+		typeC = "int"
+	}
+
+	return typeC
+}
+
+func (g *AlgumaGenerator) MapParamToTypeC(tipo parser.ITipo_basicoContext) string {
+	originalType := tipo
+	typeC := ""
+
+	if originalType.INTEIRO() != nil {
+		typeC = "int"
+	} else if originalType.REAL() != nil {
+		typeC = "float"
+	} else if originalType.LITERAL() != nil {
+		typeC = "char*"
 	} else if originalType.LOGICO() != nil {
 		typeC = "int"
 	}
