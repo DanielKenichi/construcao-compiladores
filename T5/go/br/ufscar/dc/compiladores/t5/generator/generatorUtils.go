@@ -259,7 +259,14 @@ func (g *AlgumaGenerator) GetParcelaUnarioType(ctx parser.IParcela_unarioContext
 	log.Printf("ParcelaUnario %v", ctx.GetText())
 
 	if ctx.Identificador() != nil {
-		expectedType = g.GetIdentifierType(ctx.Identificador())
+		nome := ctx.Identificador().IDENT(0).GetText()
+		log.Printf("Identifier %v", nome)
+
+		expectedType = g.GetAllScopesType(nome)
+
+		if len(ctx.Identificador().AllPONTO()) > 0 {
+			expectedType = g.GetIdentifierType(ctx.Identificador())
+		}
 	}
 
 	if ctx.IDENT() != nil {
