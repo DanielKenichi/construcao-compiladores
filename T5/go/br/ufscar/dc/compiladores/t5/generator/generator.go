@@ -365,8 +365,6 @@ func (g *AlgumaGenerator) VisitCmdAtribuicao(ctx parser.ICmdAtribuicaoContext) [
 	if varType == symboltable.LITERAL {
 		cmdAtibuicaoResult = append(cmdAtibuicaoResult, ")")
 	}
-	// result = g.VerifyVarAttribution(ctx)
-	// cmdAtibuicaoResult = append(cmdAtibuicaoResult, result...)
 
 	cmdAtibuicaoResult = append(cmdAtibuicaoResult, ";\n")
 	return cmdAtibuicaoResult
@@ -445,21 +443,11 @@ func (g *AlgumaGenerator) VisitNumero_intervalo(ctx parser.INumero_intervaloCont
 	startIdx, endIdx := 0, 0
 	step := 1
 
-	// if ctx.Op_unario(0) != nil {
-	// 	result := []string{ctx.Op_unario(0).GetText()}
-	// 	numeroIntervaloResult = append(numeroIntervaloResult, result...)
-	// }
-
 	if ctx.NUM_INT(0) != nil {
 		startIdx, _ = strconv.Atoi(ctx.NUM_INT(0).GetText())
-		// numeroIntervaloResult = append(numeroIntervaloResult, result...)
 	}
 
 	if ctx.INTERVALO() != nil {
-		// if ctx.Op_unario(1) != nil {
-		// 	result := []string{ctx.Op_unario(1).GetText()}
-		// 	numeroIntervaloResult = append(numeroIntervaloResult, result...)
-		// }
 
 		endIdx, _ = strconv.Atoi(ctx.NUM_INT(1).GetText())
 
@@ -503,9 +491,6 @@ func (g *AlgumaGenerator) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_
 			result = append(result, g.VisitRegistro(ctx.Registro())...)
 
 			result = append(result, "\t} ", ctx.IDENT().GetText(), ";\n")
-
-			// TODO: ELE ESTÁ FALANDO QUE CADASTRANDO O TIPO ANTES DE ENTRAR NO GENERATOR ? (não entendi)
-			// result = append(result, g.Visitor.AddRegTypeToSymbolTable(ctx.IDENT(), ctx.Registro())...)
 
 			variaveisResult = append(variaveisResult, result...)
 
@@ -650,12 +635,6 @@ func (g *AlgumaGenerator) VisitTipo_basico(ctx parser.ITipo_basicoContext) []str
 
 	return tipoBasicoResult
 }
-
-// func (g *AlgumaGenerator) VisitValor_constante(ctx parser.IValor_constanteContext) []string {
-// 	valorConstanteResult := make([]string, 0)
-
-// 	return valorConstanteResult
-// }
 
 func (g *AlgumaGenerator) VisitRegistro(ctx parser.IRegistroContext) []string {
 	registroResult := make([]string, 0)

@@ -150,9 +150,6 @@ func (g *AlgumaGenerator) VerifyParcela(parcela parser.IParcelaContext) []string
 
 	if parcela.Parcela_unario() != nil {
 		if parcela.Parcela_unario().Identificador() != nil {
-			// if parcela.Parcela_unario().PONTEIRO() != nil {
-			// 	parcelaResult = append(parcelaResult, "*")
-			// }
 			identifier := parcela.Parcela_unario().Identificador().GetText()
 			parcelaResult = append(parcelaResult, identifier)
 		} else if parcela.Parcela_unario().NUM_INT() != nil {

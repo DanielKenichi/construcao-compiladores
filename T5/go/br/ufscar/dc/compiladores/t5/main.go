@@ -100,7 +100,7 @@ func main() {
 	algumaVisitor.VisitPrograma(tree)
 
 	// -----------------------------------
-	// GERADOR DE CÓDIGO C
+	// GERADOR DE CÓDIGO C (T5)
 	// -----------------------------------
 
 	algumaGenerator := generator.New(algumaVisitor)
