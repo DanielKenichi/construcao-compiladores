@@ -204,13 +204,13 @@ func (g *AlgumaGenerator) GetIdentifierType(identifier parser.IIdentificadorCont
 	scopeToVerify := g.Visitor.Scopes.CurrentScope()
 	var identName string
 
-	for _, ident := range identifier.AllIDENT() {
+	for i, ident := range identifier.AllIDENT() {
 		identName = ident.GetText()
-		// regVarSymbol := g.GetRegVarSymbol(identName)
+		regVarSymbol := g.Visitor.GetRegVarSymbol(identName)
 
-		// if regVarSymbol != nil && identifier.IDENT(i+1) != nil {
-		// 	scopeToVerify = regVarSymbol.InnerTable
-		// }
+		if regVarSymbol != nil && identifier.IDENT(i+1) != nil {
+			scopeToVerify = regVarSymbol.InnerTable
+		}
 	}
 
 	return scopeToVerify.GetType(identName)
@@ -227,7 +227,6 @@ func (g *AlgumaGenerator) GetAllScopesType(ident string) symboltable.Type {
 	}
 
 	for _, scope := range g.Visitor.Scopes.Stack[:idx+1] {
-
 		if g.checkFunction != "" {
 			if scope.Exists(g.checkFunction) {
 				functionSymbol := scope.GetSymbol(g.checkFunction)
@@ -260,14 +259,7 @@ func (g *AlgumaGenerator) GetParcelaUnarioType(ctx parser.IParcela_unarioContext
 	log.Printf("ParcelaUnario %v", ctx.GetText())
 
 	if ctx.Identificador() != nil {
-		nome := ctx.Identificador().IDENT(0).GetText()
-		log.Printf("Identifier %v", nome)
-
-		if len(ctx.Identificador().AllPONTO()) > 0 {
-			// TODO: registros
-		}
-
-		return g.GetAllScopesType(nome)
+		expectedType = g.GetIdentifierType(ctx.Identificador())
 	}
 
 	if ctx.IDENT() != nil {

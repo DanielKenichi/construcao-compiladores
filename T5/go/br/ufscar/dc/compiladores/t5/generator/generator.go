@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -34,13 +35,15 @@ func New(visitor *visitor.AlgumaVisitor) *AlgumaGenerator {
 func (g *AlgumaGenerator) VisitPrograma(ctx parser.IProgramaContext) []string {
 	var programaResult = make([]string, 0)
 
-	result := []string{"#include <stdio.h>\n", "#include <stdlib.h>\n", "\n"}
+	result := []string{"#include <stdio.h>\n", "#include <stdlib.h>\n", "#include <string.h>\n", "\n"}
 	programaResult = append(programaResult, result...)
 
+	fmt.Println("VisitDeclaracoes")
 	result = g.VisitDeclaracoes(ctx.Declaracoes())
 	programaResult = append(programaResult, result...)
 	programaResult = append(programaResult, "\n")
 
+	fmt.Println("VisitCorpo")
 	result = g.VisitCorpo(ctx.Corpo())
 	programaResult = append(programaResult, result...)
 
@@ -49,7 +52,6 @@ func (g *AlgumaGenerator) VisitPrograma(ctx parser.IProgramaContext) []string {
 }
 
 func (g *AlgumaGenerator) VisitDeclaracoes(ctx parser.IDeclaracoesContext) []string {
-
 	declaracoesResult := make([]string, 0)
 
 	result := g.VisitDeclaracoes_variaveis(ctx.AllDeclaracoes_variaveis())
@@ -363,6 +365,9 @@ func (g *AlgumaGenerator) VisitCmdAtribuicao(ctx parser.ICmdAtribuicaoContext) [
 	result = g.VisitExpressao(ctx.Expressao())
 	cmdAtibuicaoResult = append(cmdAtibuicaoResult, result...)
 
+	if varType == symboltable.LITERAL {
+		cmdAtibuicaoResult = append(cmdAtibuicaoResult, ")")
+	}
 	// result = g.VerifyVarAttribution(ctx)
 	// cmdAtibuicaoResult = append(cmdAtibuicaoResult, result...)
 
@@ -495,15 +500,20 @@ func (g *AlgumaGenerator) VisitDeclaracoes_variaveis(ctxs []parser.IDeclaracoes_
 			continue
 		}
 
-		// if ctx.TIPO() != nil {
-		// 	result := g.VisitRegistro(ctx.Registro())
-		// 	variaveisResult = append(variaveisResult, result...)
+		if ctx.TIPO() != nil {
+			result := []string{"\ttypedef struct {\n"}
 
-		// 	result = g.AddRegTypeToSymbolTable(ctx.IDENT(), ctx.Registro())
-		// 	variaveisResult = append(variaveisResult, result...)
+			result = append(result, g.VisitRegistro(ctx.Registro())...)
 
-		// 	continue
-		// }
+			result = append(result, "\t} ", ctx.IDENT().GetText(), ";\n")
+
+			// TODO: ELE ESTÁ FALANDO QUE CADASTRANDO O TIPO ANTES DE ENTRAR NO GENERATOR ? (não entendi)
+			// result = append(result, g.Visitor.AddRegTypeToSymbolTable(ctx.IDENT(), ctx.Registro())...)
+
+			variaveisResult = append(variaveisResult, result...)
+
+			continue
+		}
 	}
 
 	return variaveisResult
@@ -585,31 +595,43 @@ func (g *AlgumaGenerator) VisitVariavel(ctx parser.IVariavelContext) []string {
 	variavelResult := make([]string, 0)
 	result := make([]string, 0)
 
-	result = g.VisitTipo(ctx.Tipo())
-	variavelResult = append(variavelResult, result...)
-	strSize := "[80]"
+	if ctx.Tipo().Registro() != nil {
+		result = g.VisitTipo(ctx.Tipo())
 
-	result = g.VisitIdentificador(ctx.Identificador(0))
-	variavelResult = append(variavelResult, result...)
-
-	aux := 0
-	for ctx.VIRGULA(aux) != nil {
-		aux++
-		result = []string{", "}
-		result = append(result, g.VisitIdentificador(ctx.Identificador(aux))...)
-		if ctx.Tipo().Tipo_variavel().Tipo_basico().LITERAL() != nil {
-			result = append(result, strSize)
+		for _, ident := range ctx.AllIdentificador() {
+			result = append(result, " ", ident.GetText(), ";\n")
 		}
+
+		variavelResult = append(variavelResult, result...)
+	} else {
+		result = g.VisitTipo(ctx.Tipo())
+		variavelResult = append(variavelResult, result...)
+		strSize := "[80]"
+
+		result = g.VisitIdentificador(ctx.Identificador(0))
+		variavelResult = append(variavelResult, result...)
+
+		aux := 0
+		for ctx.VIRGULA(aux) != nil {
+			aux++
+			result = []string{", "}
+			result = append(result, g.VisitIdentificador(ctx.Identificador(aux))...)
+			if ctx.Tipo().Tipo_variavel().Tipo_basico().LITERAL() != nil {
+				result = append(result, strSize)
+			}
+			variavelResult = append(variavelResult, result...)
+		}
+
+		if ctx.Tipo().Tipo_variavel().Tipo_basico() != nil {
+			if ctx.Tipo().Tipo_variavel().Tipo_basico().LITERAL() != nil {
+				result = []string{"[80]"}
+				variavelResult = append(variavelResult, result...)
+			}
+		}
+
+		result = []string{";\n"}
 		variavelResult = append(variavelResult, result...)
 	}
-
-	if ctx.Tipo().Tipo_variavel().Tipo_basico().LITERAL() != nil {
-		result = []string{"[80]"}
-		variavelResult = append(variavelResult, result...)
-	}
-
-	result = []string{";\n"}
-	variavelResult = append(variavelResult, result...)
 
 	return variavelResult
 }
@@ -638,11 +660,19 @@ func (g *AlgumaGenerator) VisitTipo_basico(ctx parser.ITipo_basicoContext) []str
 // 	return valorConstanteResult
 // }
 
-// func (g *AlgumaGenerator) VisitRegistro(ctx parser.IRegistroContext) []string {
-// 	registroResult := make([]string, 0)
+func (g *AlgumaGenerator) VisitRegistro(ctx parser.IRegistroContext) []string {
+	registroResult := make([]string, 0)
+	result := []string{""}
 
-// 	return registroResult
-// }
+	for _, variavel := range ctx.AllVariavel() {
+		result = append(result, "\t")
+		result = append(result, g.VisitVariavel(variavel)...)
+	}
+
+	registroResult = append(registroResult, result...)
+
+	return registroResult
+}
 
 func (g *AlgumaGenerator) VisitIdentificador(ctx parser.IIdentificadorContext) []string {
 	identificadorResult := make([]string, 0)
@@ -663,14 +693,20 @@ func (g *AlgumaGenerator) VisitIdentificador(ctx parser.IIdentificadorContext) [
 
 func (g *AlgumaGenerator) VisitTipo(ctx parser.ITipoContext) []string {
 	tipoResult := make([]string, 0)
+	result := []string{ctx.GetText()}
 
-	// if ctx.Registro() != nil {
-	// 	result := g.VisitRegistro(ctx.Registro())
-	// 	tipoResult = append(tipoResult, result...)
-	// }
+	if ctx.Registro() != nil {
+		result = []string{"struct {\n"}
+
+		result = append(result, g.VisitRegistro(ctx.Registro())...)
+
+		result = append(result, "}")
+
+		tipoResult = append(tipoResult, result...)
+	}
 
 	if ctx.Tipo_variavel() != nil {
-		result := g.VisitTipo_variavel(ctx.Tipo_variavel())
+		result = g.VisitTipo_variavel(ctx.Tipo_variavel())
 		tipoResult = append(tipoResult, result...)
 	}
 
@@ -684,6 +720,8 @@ func (g *AlgumaGenerator) VisitTipo_variavel(ctx parser.ITipo_variavelContext) [
 	if ctx.Tipo_basico() != nil {
 		result = append(result, g.VisitTipo_basico(ctx.Tipo_basico())...)
 		tipoVariavelResult = append(tipoVariavelResult, result...)
+	} else {
+		tipoVariavelResult = append(tipoVariavelResult, ctx.GetText()+" ")
 	}
 
 	if ctx.PONTEIRO() != nil {
