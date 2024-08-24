@@ -677,13 +677,16 @@ func (g *AlgumaGenerator) VisitIdentificador(ctx parser.IIdentificadorContext) [
 	result := ctx.IDENT(0).GetText()
 	identificadorResult = append(identificadorResult, result)
 
-	// aux := 0
+	aux := 0
 
-	// for ctx.ABRECHAVE(aux) != nil {
-	// 	result := g.VisitExp_aritmetica(ctx.Exp_aritmetica(aux))
-	// 	identificadorResult = append(identificadorResult, result...)
-	// 	aux++
-	// }
+	for ctx.ABRECHAVE(aux) != nil {
+
+		identificadorResult = append(identificadorResult, "[")
+		identificadorResult = append(identificadorResult, ctx.Exp_aritmetica(aux).GetText())
+		identificadorResult = append(identificadorResult, "]")
+
+		aux++
+	}
 
 	return identificadorResult
 }
