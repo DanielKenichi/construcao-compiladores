@@ -1,7 +1,6 @@
 package generator
 
 import (
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -38,12 +37,10 @@ func (g *AlgumaGenerator) VisitPrograma(ctx parser.IProgramaContext) []string {
 	result := []string{"#include <stdio.h>\n", "#include <stdlib.h>\n", "#include <string.h>\n", "\n"}
 	programaResult = append(programaResult, result...)
 
-	fmt.Println("VisitDeclaracoes")
 	result = g.VisitDeclaracoes(ctx.Declaracoes())
 	programaResult = append(programaResult, result...)
 	programaResult = append(programaResult, "\n")
 
-	fmt.Println("VisitCorpo")
 	result = g.VisitCorpo(ctx.Corpo())
 	programaResult = append(programaResult, result...)
 
